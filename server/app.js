@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { notFound, errorHandler } from "./Middlewares/error.middleware.js";
 import userRouter from "./routes/user.route.js";
 import clientRouter from "./routes/client.route.js";
+import employeeRouter from "./routes/employee.route.js";
 import timeout from "connect-timeout";
 const app = express();
 
@@ -23,4 +24,5 @@ app.use((req, res, next) => {
 app.disable("x-powered-by");
 app.use("/api", userRouter);
 app.use("/api", clientRouter);
+app.use("/api", employeeRouter);
 export default app;

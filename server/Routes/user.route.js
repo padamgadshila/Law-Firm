@@ -7,6 +7,7 @@ import {
   bulkDelete,
   bulkEdit,
   bulkHide,
+  dashboardData,
   deleteEvent,
   deleteExpiredEvents,
   downloadFile,
@@ -75,7 +76,7 @@ userRouter.post("/resendOtp");
 userRouter.put("/resetPassword", resetPassword);
 
 // Dashboard data
-userRouter.get("/dashboardData", authorize("Admin"));
+userRouter.get("/dashboardData", authorize("Admin"), dashboardData);
 
 // Add Event
 userRouter.post("/addEvent", authorize("Admin"), addEvent);
