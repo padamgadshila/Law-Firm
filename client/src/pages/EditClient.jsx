@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import { getOneClientBYId, updateClient } from "./helpers/helper";
 import { Toaster, toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useAxios } from "../hook/fetch.hook";
 let EditClient = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { put, get } = useAxios();
   const _id = location.search.split("=")[1];
   const formik = useFormik({
     initialValues: {
@@ -32,7 +32,7 @@ let EditClient = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let { data, status } = await updateClient(values);
+        let { data, status } = await put("/api/updateClient", values);
         if (status === 200) {
           toast.success(data.message);
           const role = localStorage.getItem("role");
@@ -52,7 +52,7 @@ let EditClient = () => {
       const {
         data: { clientData },
         status,
-      } = await getOneClientBYId(id);
+      } = await get("/api/clientData", { id: id });
 
       if (status === 200) {
         formik.setValues({

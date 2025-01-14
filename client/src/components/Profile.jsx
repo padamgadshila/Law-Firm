@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import styles from "../css/style.module.css";
-import avatar from "./images/profile.png";
+import avatar from "../images/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket, faGear } from "@fortawesome/free-solid-svg-icons";
-import { getProfileInfo } from "./helpers/helper";
 let Profile = ({ toast, Link, profile, setProfile, navigate }) => {
   useEffect(() => {
     const id = localStorage.getItem("id");

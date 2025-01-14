@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import styles from "../css/style.module.css";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import avatar from "./images/profile.png";
-import { getProfilePic, resSendOtp, verifyOtp } from "./helpers/helper";
+import avatar from "../images/profile.png";
 import toast, { Toaster } from "react-hot-toast";
+import { useAxios } from "../hook/fetch.hook";
 let Verify = () => {
+  const { post } = useAxios();
   let [image, setImage] = useState(null);
   const navigate = useNavigate();
   const formik = useFormik({
@@ -18,7 +19,7 @@ let Verify = () => {
       try {
         let email = localStorage.getItem("email");
         Object.assign(values, { email: email });
-        const { status } = await verifyOtp(values);
+        const { status } = await post("/api/verifyOtp", values);
 
         if (status === 200) {
           navigate("/resetPassword", { replace: true });

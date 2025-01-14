@@ -4,11 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { emailValidation } from "./helpers/validation";
+import { emailValidation } from "../helper/validation";
 import { Toaster, toast } from "react-hot-toast";
-import { sendMail, verifyEmail } from "./helpers/helper";
+import { useAxios } from "../hook/fetch.hook";
 let Email = () => {
   const navigate = useNavigate();
+  const { post } = useAxios();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -18,7 +19,7 @@ let Email = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const { data, status } = await verifyEmail(values);
+        const { data, status } = await post("/api/sendOtp", values);
         if (status === 200) {
           if (localStorage.getItem("email") === null) {
             localStorage.setItem("email", values.email);

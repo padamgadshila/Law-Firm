@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import { getProfileInfo, updateProfile } from "./helpers/helper";
 import { toast, Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import profilePic from "./images/profile.png";
-import { convertToBase64 } from "./helpers/convert";
-let updateProfile = () => {
+import profilePic from "../images/profile.png";
+import { convertToBase64 } from "../helper/convert";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
+let UpdateProfile = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
+  const { get, put } = useAxios();
   const formik = useFormik({
     initialValues: {
       fname: "",
@@ -25,7 +27,10 @@ let updateProfile = () => {
     onSubmit: async (values) => {
       try {
         await formik.setFieldValue("profilePic", image || "");
-        const { data, status } = await updateProfile(values);
+        const { data, status } = await put(
+          `/api/updateProfile?id=${values._id}`,
+          values
+        );
         if (status === 200) {
           toast.success(data.message);
           const role = localStorage.getItem("role");
@@ -61,7 +66,7 @@ let updateProfile = () => {
       const {
         data: { userData },
         status,
-      } = await getProfileInfo(id, role);
+      } = await get("/api/profile", { id: id, role: role }, { getToken });
       if (status === 200) {
         formik.setValues({
           fname: userData.fname || "",
@@ -184,4 +189,4 @@ let updateProfile = () => {
   );
 };
 
-export default updateProfile;
+export default UpdateProfile;

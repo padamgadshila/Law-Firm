@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../css/style.module.css";
-import avatar from "./images/profile.png";
+import avatar from "../images/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -11,10 +11,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
-import Client from "./Client";
-import { getClients } from "./helpers/helper";
+import Client from "../components/Client";
 import { useClientStore } from "../store/store";
-import { Profile } from "./Profile";
+import Profile from "../components/Profile";
+
 let Employee = () => {
   const navigate = useNavigate();
   let [activeTab, setActiveTab] = useState(() => {

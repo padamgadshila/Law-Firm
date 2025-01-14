@@ -4,19 +4,19 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Email from "./pages/Email";
-import PasswordReset from "./pages/PasswordReset";
+import ResetPassword from "./pages/ResetPassword";
 import Verify from "./pages/Verify";
 import AddEmployee from "./pages/AddEmployee";
 import AddClient from "./pages/AddClient";
 import AddClientDocuments from "./pages/AddClientDocuments";
 import Admin from "./pages/Admin";
-import { AuthorizeUser } from "./auth/auth";
+import { AuthorizeUser } from "./auth/authorizeUser";
 import Employee from "./pages/Employee";
 import Session from "./pages/Session";
 import EditClient from "./pages/EditClient";
 import EditEmployee from "./pages/EditEmployee";
 import UpdateProfile from "./pages/UpdateProfile";
-import ViewDocuments from "./pages/ViewDocuments";
+import ViewDocuments from "./components/ViewDocuments";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
   },
   { path: "/email", element: <Email /> },
   { path: "/verify", element: <Verify /> },
-  { path: "/resetPassword", element: <PasswordReset /> },
+  { path: "/resetPassword", element: <ResetPassword /> },
   {
     path: "/addEmployee",
     element: (

@@ -6,8 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { Toaster, toast } from "react-hot-toast";
 import { loginValidation } from "../helper/validation";
-import { login } from "../controllers/user.controller";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 export default function Login() {
+  const { post } = useAxios();
+
   const [searchParams] = useSearchParams();
   const isAdmin = searchParams.has("Admin");
   const isEmployee = searchParams.has("Employee");
@@ -26,7 +29,7 @@ export default function Login() {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const { data, status } = await login(values);
+        const { data, status } = await post("/api/login", values, { getToken });
 
         if (status === 200) {
           toast.success(data.message);

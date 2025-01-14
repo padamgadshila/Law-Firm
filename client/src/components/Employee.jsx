@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { deleteEmployeeData, getEmployee } from "./helpers/helper";
 import { Link } from "react-router-dom";
 import { useEmployeeStore } from "../store/store";
 

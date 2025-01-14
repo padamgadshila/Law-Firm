@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import { addClientDocuments } from "./helpers/helper";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 
 let AddClientDocuments = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { post } = useAxios();
 
   const id = location.search.split("=")[1];
 
@@ -30,11 +32,21 @@ let AddClientDocuments = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const { data, status } = await addClientDocuments({
-          documents,
-          values,
+        let formData = new FormData();
+
+        documents.forEach((doc, i) => {
+          formData.append(`documentType-${i}`, doc.documentType);
+          formData.append(`document-${i}`, doc.document);
         });
-        if (status === 201) {
+
+        formData.append("info", JSON.stringify(values.info));
+        formData.append("_id", JSON.stringify(values._id));
+        const { data, status } = await post(
+          "/api/addClientDocument",
+          formData,
+          { getToken }
+        );
+        if (status === 200) {
           toast.success(data.message);
           let role = localStorage.getItem("role");
 
