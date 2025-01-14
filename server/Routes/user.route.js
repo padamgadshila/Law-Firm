@@ -3,6 +3,7 @@ import {
   add,
   addEmployee,
   addEvent,
+  auth,
   bulkDelete,
   bulkEdit,
   bulkHide,
@@ -23,6 +24,8 @@ import {
 import { authorize } from "../Auth/auth.js";
 import { Mail } from "../controller/mail.controller.js";
 const userRouter = Router();
+//auth
+userRouter.post("/auth", authorize(["Admin", "Employee"]), auth);
 
 // Add admin
 userRouter.post("/add", add);

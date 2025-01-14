@@ -13,6 +13,11 @@ import { Mail } from "./mail.controller.js";
 import { getOtp } from "../helper/otpGenerator.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// auth
+export let auth = async (req, res) => {
+  return res.status(200).json({ message: "authorized" });
+};
 // add new admin
 export let add = async (req, res) => {
   try {
