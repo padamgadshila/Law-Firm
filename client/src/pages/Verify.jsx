@@ -5,8 +5,9 @@ import { useFormik } from "formik";
 import avatar from "../images/profile.png";
 import toast, { Toaster } from "react-hot-toast";
 import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Verify = () => {
-  const { post } = useAxios();
+  const { post, get } = useAxios();
   let [image, setImage] = useState(null);
   const navigate = useNavigate();
   const formik = useFormik({
@@ -34,7 +35,11 @@ let Verify = () => {
     let getProfileImage = async () => {
       try {
         let email = localStorage.getItem("email");
-        const { data, status } = await getProfilePic(email);
+        const { data, status } = await get(
+          "/api/getProfilePic}",
+          { email: email },
+          { getToken }
+        );
         if (status === 200) {
           setImage(data.profilePic.profilePic);
         }
@@ -44,12 +49,12 @@ let Verify = () => {
     };
 
     getProfileImage();
-  }, []);
+  }, [get]);
 
   let resendOtp = async () => {
     try {
       let email = localStorage.getItem("email");
-      const { data, status } = await resSendOtp(email);
+      const { data, status } = await post("/api/resendOtp", { email: email });
       if (status === 200) {
         toast.success(data.message);
       }

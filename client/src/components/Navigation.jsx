@@ -10,6 +10,8 @@ import {
 import avatar from "../images/profile.png";
 import toast from "react-hot-toast";
 import { useClientStore } from "../store/store";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Navigation = ({
   showSidebar,
   setShowSidebar,
@@ -17,25 +19,29 @@ let Navigation = ({
   activeTab,
   showProfile,
   setShowProfile,
-
   filters,
-  setInputSearch,
   inputSearch,
+  setInputSearch,
   setFilterClientDetails,
-  Crud,
+  operation,
   selectedRecords,
   removeSelectedRecords,
   handleShowEditor,
-
   selectedFilter,
   setSelectedFilter,
-  setClientData,
   clientData,
+  setClientData,
 }) => {
+  const { post, put, get, remove } = useAxios();
+  const token = getToken();
   const removeClient = useClientStore((state) => state.removeClient);
   let deleteMany = async () => {
     try {
-      const { data, status } = await bulkDelete(selectedRecords);
+      const { data, status } = await post(
+        "/api/bulkDelete",
+        { ids: selectedRecords },
+        token
+      );
       if (status === 200) {
         toast.success(data.message);
         selectedRecords.forEach((id) => {
@@ -81,7 +87,11 @@ let Navigation = ({
   // hide
   let hideMany = async () => {
     try {
-      const { data, status } = await bulkHide(selectedRecords);
+      const { data, status } = await post(
+        "/api/bulkHide",
+        { ids: selectedRecords },
+        token
+      );
       if (status === 200) {
         toast.success(data.message);
         selectedRecords.forEach((id) => {
@@ -97,8 +107,8 @@ let Navigation = ({
   };
   const getClientData = async () => {
     try {
-      const { data, status } = await getClients();
-      if (status === 201) {
+      const { data, status } = await get("/api/getClients", token);
+      if (status === 200) {
         setClientData(data.clientData);
         // setFilterClientDetails(data.clientData);
       }
@@ -114,7 +124,7 @@ let Navigation = ({
     <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white shadow-lg flex items-center justify-between w-full mx-auto h-[70px]">
       <div
         className={`w-full h-[70px] bg-[rgba(0,0,0,.3)] backdrop-blur-sm absolute top-0 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center ${
-          Crud ? "opacity-100 visible" : "opacity-0 invisible"
+          operation ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
         <div className="bg-white shadow-md rounded-md flex items-center justify-evenly w-[500px] h-[60px]">

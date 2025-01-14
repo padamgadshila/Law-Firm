@@ -3,7 +3,11 @@ import styles from "../css/style.module.css";
 import avatar from "../images/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket, faGear } from "@fortawesome/free-solid-svg-icons";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Profile = ({ toast, Link, profile, setProfile, navigate }) => {
+  const { get } = useAxios();
+  const token = getToken();
   useEffect(() => {
     const id = localStorage.getItem("id");
     const role = localStorage.getItem("role");
@@ -12,7 +16,7 @@ let Profile = ({ toast, Link, profile, setProfile, navigate }) => {
         const {
           data: { userData },
           status,
-        } = await getProfileInfo(id, role);
+        } = await get(`/api/profile?id=${id}&role=${role}`, token);
         if (status === 200) {
           setProfile(userData);
         } else {
@@ -26,7 +30,7 @@ let Profile = ({ toast, Link, profile, setProfile, navigate }) => {
       }
     };
     getProfile(id, role);
-  }, [setProfile, toast]);
+  }, [get, setProfile, toast]);
 
   let logout = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

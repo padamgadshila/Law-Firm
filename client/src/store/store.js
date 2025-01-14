@@ -48,7 +48,7 @@ export let useSelectRecords = create((set) => ({
 
 // states
 export let useActiveTab = create((set) => ({
-  activeTab: 0,
+  activeTab: parseInt(localStorage.getItem("activeTab")) || 0,
   setActiveTab: (data) => set({ activeTab: data }),
 }));
 
@@ -88,7 +88,7 @@ export let useInput = create((set) => ({
 }));
 
 export let useFilter = create((set) => ({
-  selectedFilter: "",
+  selectedFilter: "Visible Clients",
   setSelectedFilter: (data) => set({ selectedFilter: data }),
 }));
 

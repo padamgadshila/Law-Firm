@@ -16,6 +16,7 @@ let Client = ({
   removeClient,
   setClientData,
 }) => {
+  const token = getToken();
   const { get, remove } = useAxios();
   const handleCheckboxChange = (id) => {
     if (selectedRecords.includes(id)) {
@@ -92,11 +93,7 @@ let Client = ({
 
   const printDocument = async (e) => {
     try {
-      const { data, status } = await get(
-        "/api/clientDoc",
-        { getToken },
-        { id: e._id }
-      );
+      const { data, status } = await get(`/api/clientDocs?id=${e._id}`, token);
 
       const printableContent = `
   <!DOCTYPE html>
@@ -274,7 +271,7 @@ let Client = ({
             Edit
           </Link>
         </td>
-        {role === "admin" && (
+        {role === "Admin" && (
           <>
             <td className="px-4 py-2 border text-center cursor-pointer ">
               <button
@@ -391,7 +388,7 @@ let Client = ({
 
   const getClientData = async () => {
     try {
-      const { data, status } = await get("/api/getClients", { getToken });
+      const { data, status } = await get("/api/getClients", token);
       if (status === 200) {
         setClientData(data.clientData);
         // setOriginalClientData(data.clientData);
@@ -409,11 +406,10 @@ let Client = ({
   const deleteClient = async (_id) => {
     try {
       const { data, status } = await remove(
-        "/api/deleteClient",
-        { id: _id },
-        { getToken }
+        `/api/deleteClient?id=${_id}`,
+        token
       );
-      if (status === 201) {
+      if (status === 200) {
         toast.success(data.message);
         removeClient(_id);
       }
@@ -426,10 +422,10 @@ let Client = ({
   return (
     <div className="absolute w-full h-full px-2">
       <table className="border-collapse w-full text-left table-auto">
-        <TableHeader isAdmin={role === "admin"} />
+        <TableHeader isAdmin={role === "Admin"} />
         <TableBody
           filteredData={filteredData}
-          isAdmin={role === "admin"}
+          isAdmin={role === "Admin"}
           deleteClient={deleteClient}
         />
       </table>

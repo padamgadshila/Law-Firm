@@ -36,9 +36,9 @@ export default function Login() {
           document.cookie = `token=${data.token}; path=/; SameSite=Strict;`;
           localStorage.setItem("role", userType);
           localStorage.setItem("id", data.user.id);
-          if (userType === "admin") {
+          if (userType === "Admin") {
             navigate("/admin");
-          } else if (userType === "employee") {
+          } else if (userType === "Employee") {
             navigate("/employee");
           }
         }

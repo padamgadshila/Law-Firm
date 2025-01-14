@@ -1,14 +1,20 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useEmployeeStore } from "../store/store";
-
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Employee = ({ toast }) => {
+  const token = getToken();
+  const { get, post, remove } = useAxios();
   const employeeData = useEmployeeStore((state) => state.employeeData);
   const setEmployeeData = useEmployeeStore((state) => state.setEmployeeData);
   const removeEmployee = useEmployeeStore((state) => state.removeEmployee);
   const getEmployeeData = async () => {
     try {
-      const { data, status } = await getEmployee();
+      const { data, status } = await get(
+        "/api/getEmployee?role=Employee",
+        token
+      );
       if (status === 200) {
         setEmployeeData(data.employeeData);
       }
@@ -26,7 +32,10 @@ let Employee = ({ toast }) => {
 
   let deleteEmployee = async (eid) => {
     try {
-      const { data, status } = await deleteEmployeeData(eid);
+      const { data, status } = await remove(
+        `/api/deleteEmployee?id=${eid}&role=Employee`,
+        token
+      );
 
       if (status === 200) {
         toast.success(data.message);

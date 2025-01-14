@@ -4,6 +4,7 @@ import { taskValidation } from "../helper/validation";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let AddEvent = ({ toast, setEvents }) => {
+  const token = getToken();
   const { post, get } = useAxios();
   const id = localStorage.getItem("id");
   const formik = useFormik({
@@ -18,11 +19,7 @@ let AddEvent = ({ toast, setEvents }) => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let { data, status } = await post(
-          "/api/addEvent",
-          { getToken },
-          values
-        );
+        let { data, status } = await post("/api/addEvent", values, token);
         if (status === 200) {
           toast.success(data.message);
           formik.resetForm();
@@ -38,7 +35,7 @@ let AddEvent = ({ toast, setEvents }) => {
 
   let eventsData = async () => {
     try {
-      const { data, status } = await get("/api/getEvents", { id: id });
+      const { data, status } = await get(`/api/getEvents?id=${id}`, token);
       if (status === 200) {
         setEvents(data.events);
       }

@@ -14,8 +14,11 @@ import { Toaster, toast } from "react-hot-toast";
 import Client from "../components/Client";
 import { useClientStore } from "../store/store";
 import Profile from "../components/Profile";
-
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Employee = () => {
+  const token = getToken();
+  const { get } = useAxios();
   const navigate = useNavigate();
   let [activeTab, setActiveTab] = useState(() => {
     return parseInt(localStorage.getItem("activeTabE")) || 0;
@@ -59,8 +62,8 @@ let Employee = () => {
   let Refresh = async () => {
     setLoading(true);
     try {
-      const { data, status } = await getClients();
-      if (status === 201) {
+      const { data, status } = await get("/api/getClients", token);
+      if (status === 200) {
         setClientData(data.clientData);
       } else {
         throw new Error("Failed to fetch clients");

@@ -113,7 +113,7 @@ let Admin = () => {
     { name: "Visible Clients", value: "Visible Clients" },
   ];
   useEffect(() => {
-    setSelectedFilter("Visible");
+    setSelectedFilter("Visible Clients");
   }, [clientData, setSelectedFilter]);
 
   // function to show editor page
@@ -170,6 +170,8 @@ let Admin = () => {
           handleAddDocumentDisplay={handleAddDocumentDisplay}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          clientData={clientData}
+          setClientData={setClientData}
         />
         {/* Content Area */}
         <div

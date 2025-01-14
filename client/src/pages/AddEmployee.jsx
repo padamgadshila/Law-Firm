@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let AddEmployee = () => {
+  const token = getToken();
   const navigate = useNavigate();
   const { post } = useAxios();
 
@@ -15,16 +16,18 @@ let AddEmployee = () => {
       lname: "",
       email: "",
       mobile: "",
-      role: "employee",
+      role: "Employee",
     },
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const addEmployeeResponse = await post("/api/addEmployee", values, {
-          getToken,
-        });
-        if (addEmployeeResponse.status === 200) {
+        const addEmployeeResponse = await post(
+          "/api/addEmployee",
+          values,
+          token
+        );
+        if (addEmployeeResponse.status === 201) {
           toast.success(addEmployeeResponse.data.message);
           await toast.promise(
             post("/api/sendMail", addEmployeeResponse.data.mail),

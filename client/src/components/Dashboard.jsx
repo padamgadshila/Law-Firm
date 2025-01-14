@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEvent } from "../store/store";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Dashboard = ({ toast, setEvents, events }) => {
+  const token = getToken();
+  const { get, remove } = useAxios();
   const id = localStorage.getItem("id");
   let [Totals, setTotals] = useState([{}]);
 
@@ -16,7 +20,7 @@ let Dashboard = ({ toast, setEvents, events }) => {
 
   useEffect(() => {
     let getDashboardData = async () => {
-      const { data, status } = await dashboardData(id);
+      const { data, status } = await get(`/api/dashboardData?id=${id}`, token);
       if (status === 200) {
         setTotalEmp(data?.totalEmployee);
         setTotalCli(data?.TotalClients);
@@ -27,7 +31,7 @@ let Dashboard = ({ toast, setEvents, events }) => {
       }
     };
     getDashboardData();
-  }, [id, setEvents]);
+  }, [id, setEvents, get, token]);
 
   useEffect(() => {
     const sortedEvents = events.sort((a, b) => {
@@ -67,7 +71,7 @@ let Dashboard = ({ toast, setEvents, events }) => {
 
   let delEvents = async (id) => {
     try {
-      const { data, status } = await deleteEvent(id);
+      const { data, status } = await remove(`api/delEvent?id=${id}`, token);
       if (status === 200) {
         toast.success(data.message);
         removeEvents(id);
