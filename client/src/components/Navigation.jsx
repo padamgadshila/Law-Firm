@@ -160,7 +160,7 @@ let Navigation = ({
           {profile.username || "Admin"}
         </h1>
       </div>
-      {activeTab === 1 && (
+      {(activeTab === 1 || activeTab === 0) && (
         <div className="flex items-center gap-1">
           <input
             type="text"

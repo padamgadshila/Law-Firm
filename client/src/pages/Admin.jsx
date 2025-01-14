@@ -202,7 +202,9 @@ let Admin = () => {
           {activeTab === 2 && (
             <AddEvent toast={toast} events={events} setEvents={setEvents} />
           )}
-          {activeTab === 3 && <Employee toast={toast} />}
+          {activeTab === 3 && <div>Statics</div>}
+          {activeTab === 4 && <div>Others</div>}
+          {activeTab === 5 && <Employee toast={toast} />}
         </div>
       </div>
 

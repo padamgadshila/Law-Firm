@@ -8,6 +8,7 @@ import {
   faCalendarDays,
   faGears,
   faChartLine,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
@@ -38,9 +39,10 @@ let Sidebar = ({
       option: [],
     },
     { name: "Statistics", icon: faChartLine, option: [] },
+    { name: "Others", icon: faGears, option: [] },
     {
       name: "Settings",
-      icon: faGears,
+      icon: faGear,
       option: [{ name: "Add employee", link: "/addEmployee" }],
     },
   ];
