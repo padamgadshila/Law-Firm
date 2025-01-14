@@ -24,7 +24,7 @@ let Email = () => {
           if (localStorage.getItem("email") === null) {
             localStorage.setItem("email", values.email);
           }
-          await toast.promise(sendMail(data.emailData), {
+          await toast.promise(post("/api/sendMail", data.emailData), {
             loading: "Sending otp...",
             success: "OTP sent successfully!",
             error: "Failed to send otp.",

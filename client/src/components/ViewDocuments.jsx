@@ -3,15 +3,22 @@ import { Link, useLocation } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 
 let ViewDocuments = () => {
+  const { get } = useAxios();
   const role = localStorage.getItem("role");
   const location = useLocation();
   const id = location.search.split("=")[1];
   const [docs, setDocs] = useState();
   const getDocuments = async (_id) => {
     try {
-      const { data, status } = await getClientDocuments(_id);
+      const { data, status } = await get(
+        "/api/clientDoc",
+        { id: _id },
+        { getToken }
+      );
       if (status === 201) {
         setDocs(data.docs);
       }

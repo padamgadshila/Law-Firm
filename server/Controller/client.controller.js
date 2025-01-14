@@ -39,7 +39,7 @@ export let addClient = async (req, res) => {
     });
 
     return res
-      .status(201)
+      .status(200)
       .json({ message: "Client added..!", _id: client._id });
   } catch (error) {
     return res.status(500).json({ error: "server error" });
@@ -246,6 +246,8 @@ export let getClients = async (req, res) => {
 
     return res.status(200).json({ message: "okay", clientData });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error: "Server Error" });
   }
 };

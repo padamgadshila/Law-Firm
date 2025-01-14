@@ -6,7 +6,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let EditClient = () => {
+  const token = getToken();
   const navigate = useNavigate();
   const location = useLocation();
   const { put, get } = useAxios();
@@ -32,13 +34,13 @@ let EditClient = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let { data, status } = await put("/api/updateClient", values);
+        let { data, status } = await put("/api/updateClient", values, token);
         if (status === 200) {
           toast.success(data.message);
           const role = localStorage.getItem("role");
-          if (role === "admin") {
+          if (role === "Admin") {
             navigate("/admin");
-          } else if (role === "employee") {
+          } else if (role === "Employee") {
             navigate("/employee");
           }
         }
@@ -52,7 +54,7 @@ let EditClient = () => {
       const {
         data: { clientData },
         status,
-      } = await get("/api/clientData", { id: id });
+      } = await get(`/api/clientData?id=${id}`, token);
 
       if (status === 200) {
         formik.setValues({

@@ -11,7 +11,7 @@ import AddClient from "./pages/AddClient";
 import AddClientDocuments from "./pages/AddClientDocuments";
 import Admin from "./pages/Admin";
 import { AuthorizeUser } from "./auth/authorizeUser";
-import Employee from "./pages/Employee";
+import Employee from "./components/Employee";
 import Session from "./pages/Session";
 import EditClient from "./pages/EditClient";
 import EditEmployee from "./pages/EditEmployee";

@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let EditEmployee = () => {
+  const token = getToken();
   const navigate = useNavigate();
   const location = useLocation();
   const { get, put } = useAxios();
@@ -24,9 +25,11 @@ let EditEmployee = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const { data, status } = await put("/api/updateEmployee", values, {
-          getToken,
-        });
+        const { data, status } = await put(
+          "/api/updateEmployee",
+          values,
+          token
+        );
         if (status === 200) {
           toast.success(data.message);
           navigate("/admin");
@@ -46,11 +49,7 @@ let EditEmployee = () => {
         const {
           data: { employeeData },
           status,
-        } = await get(
-          "/api/employeeData",
-          { getToken },
-          { id: eid, role: "Employee" }
-        );
+        } = await get(`/api/employeeData?id=${eid}&role=Employee`, token);
         if (status === 200) {
           formik.setValues({
             _id: employeeData._id || "",
@@ -68,7 +67,7 @@ let EditEmployee = () => {
       }
     };
     getEmployeeById();
-  }, [eid, formik, get]);
+  }, []);
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <Toaster />

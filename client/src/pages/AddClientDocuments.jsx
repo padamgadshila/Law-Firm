@@ -9,6 +9,7 @@ import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 
 let AddClientDocuments = () => {
+  const token = getToken();
   const navigate = useNavigate();
   const location = useLocation();
   const { post } = useAxios();
@@ -44,15 +45,16 @@ let AddClientDocuments = () => {
         const { data, status } = await post(
           "/api/addClientDocument",
           formData,
-          { getToken }
+          token
         );
         if (status === 200) {
           toast.success(data.message);
-          let role = localStorage.getItem("role");
+          const role = localStorage.getItem("role");
+          console.log(role === "Admin");
 
-          if (role === "admin") {
+          if (role === "Admin") {
             navigate("/admin");
-          } else if (role === "employee") {
+          } else if (role === "Employee") {
             navigate("/employee");
           }
         }
@@ -85,7 +87,7 @@ let AddClientDocuments = () => {
     setDocuments(updatedDocuments);
   };
 
-  useEffect(() => {}, [documents]);
+  // useEffect(() => {}, [documents]);
 
   const docTypes = [
     "Client Photo",
@@ -188,25 +190,15 @@ let AddClientDocuments = () => {
         <button className={styles.button} type="submit">
           Upload
         </button>
-        {localStorage.getItem("role") === "admin" ? (
-          <Link
-            to={
-              localStorage.getItem("role") === "admin" ? "/admin" : "/employee"
-            }
-            className="mt-4 text-[20px] font-bold text-blue-500 "
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
-            Back to Home
-          </Link>
-        ) : (
-          <Link
-            to={"/employee"}
-            className="mt-4 text-[20px] font-bold text-blue-500 "
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
-            Back to Home
-          </Link>
-        )}
+        <Link
+          to={`${
+            localStorage.getItem("role") === "Admin" ? "/admin" : "/employee"
+          }`}
+          className="mt-4 text-[20px] font-bold text-blue-500 "
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
+          Back to Home
+        </Link>
       </form>
     </div>
   );

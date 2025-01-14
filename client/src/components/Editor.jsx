@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import styles from "../css/style.module.css";
 import toast from "react-hot-toast";
 import { useClientStore } from "../store/store";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let Editor = ({
   showEditor,
   handleShowEditor,
@@ -13,6 +15,8 @@ let Editor = ({
   removeSelectedRecords,
   removeClient,
 }) => {
+  const { get, post } = useAxios();
+  const token = getToken();
   const setClientData = useClientStore((state) => state.setClientData);
   const formik = useFormik({
     initialValues: {
@@ -25,7 +29,8 @@ let Editor = ({
     onSubmit: async (values) => {
       try {
         Object.assign(values, { id: selectedRecords });
-        const { data, status } = await bulkEdit(values);
+
+        const { data, status } = await post("/api/bulkEdit", values, token);
         if (status === 200) {
           toast.success(data.message);
           formik.resetForm();
@@ -45,8 +50,8 @@ let Editor = ({
 
   const getClientData = async () => {
     try {
-      const { data, status } = await getClients();
-      if (status === 201) {
+      const { data, status } = await get("/api/getClients", token);
+      if (status === 200) {
         setClientData(data.clientData);
         // setFilterClientDetails(data.clientData);
       }

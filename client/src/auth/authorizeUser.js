@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { auth } from "./auth";
-import { getCookie } from "../helper/getCookie";
+import { getToken } from "../helper/getCookie";
+import { useAxios } from "../hook/fetch.hook";
 
 export const AuthorizeUser = ({ children }) => {
+  const { post } = useAxios();
   const [isAuthorized, setIsAuthorized] = useState(null);
-
+  const token = getToken();
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        const { status } = await auth(getCookie);
+        const { status } = await post("/api/auth", {}, token);
         if (status === 200) {
           setIsAuthorized(true);
         } else {

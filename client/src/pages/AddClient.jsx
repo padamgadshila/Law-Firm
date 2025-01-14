@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let AddClient = () => {
+  const token = getToken();
   const { post } = useAxios();
   const navigate = useNavigate();
   const formik = useFormik({
@@ -28,9 +29,7 @@ let AddClient = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let { data, status } = await post("/api/addClient", values, {
-          getToken,
-        });
+        let { data, status } = await post("/api/addClient", values, token);
         if (status === 200) {
           toast.success("Client Info saved..!");
           navigate(`/addClientDocuments?id=${data._id}`);
