@@ -81,3 +81,18 @@ export let useEditor = create((set) => ({
   showEditor: false,
   setShowEditor: (data) => set({ showEditor: data }),
 }));
+
+export let useInput = create((set) => ({
+  inputSearch: "",
+  setInputSearch: (data) => set({ inputSearch: data }),
+}));
+
+export let useFilter = create((set) => ({
+  selectedFilter: "",
+  setSelectedFilter: (data) => set({ selectedFilter: data }),
+}));
+
+export let useOperation = create((set) => ({
+  operation: false,
+  setOperation: (data) => set({ operation: data }),
+}));

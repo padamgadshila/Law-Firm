@@ -1,17 +1,14 @@
 import React, { useEffect } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import {
-  addEmployee,
-  getOneEmployeeById,
-  updateEmployee,
-} from "./helpers/helper";
 import { toast, Toaster } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let EditEmployee = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { get, put } = useAxios();
   const eid = location.search.split("=")[1];
   const formik = useFormik({
     initialValues: {
@@ -27,7 +24,9 @@ let EditEmployee = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const { data, status } = await updateEmployee(values);
+        const { data, status } = await put("/api/updateEmployee", values, {
+          getToken,
+        });
         if (status === 200) {
           toast.success(data.message);
           navigate("/admin");
@@ -40,32 +39,36 @@ let EditEmployee = () => {
       }
     },
   });
-  let getEmployeeById = async (id) => {
-    try {
-      const {
-        data: { employeeData },
-        status,
-      } = await getOneEmployeeById(id);
-      if (status === 200) {
-        formik.setValues({
-          _id: employeeData._id || "",
-          fname: employeeData.fname || "",
-          lname: employeeData.lname || "",
-          email: employeeData.email || "",
-          mobile: employeeData.mobile || "",
-          role: employeeData.role || "",
-          username: employeeData.username || "",
-        });
-      }
-    } catch (error) {
-      const { data } = error.response;
-      toast.error(data.error);
-    }
-  };
 
   useEffect(() => {
-    getEmployeeById(eid);
-  }, []);
+    let getEmployeeById = async () => {
+      try {
+        const {
+          data: { employeeData },
+          status,
+        } = await get(
+          "/api/employeeData",
+          { getToken },
+          { id: eid, role: "Employee" }
+        );
+        if (status === 200) {
+          formik.setValues({
+            _id: employeeData._id || "",
+            fname: employeeData.fname || "",
+            lname: employeeData.lname || "",
+            email: employeeData.email || "",
+            mobile: employeeData.mobile || "",
+            role: employeeData.role || "",
+            username: employeeData.username || "",
+          });
+        }
+      } catch (error) {
+        const { data } = error.response;
+        toast.error(data.error);
+      }
+    };
+    getEmployeeById();
+  }, [eid, formik, get]);
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <Toaster />

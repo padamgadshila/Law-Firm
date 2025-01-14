@@ -1,8 +1,10 @@
 import React from "react";
 import { useFormik } from "formik";
-import { taskValidation } from "./helpers/validation";
-import { addEvent, getEvents } from "./helpers/helper";
+import { taskValidation } from "../helper/validation";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let AddEvent = ({ toast, setEvents }) => {
+  const { post, get } = useAxios();
   const id = localStorage.getItem("id");
   const formik = useFormik({
     initialValues: {
@@ -16,7 +18,11 @@ let AddEvent = ({ toast, setEvents }) => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let { data, status } = await addEvent(values);
+        let { data, status } = await post(
+          "/api/addEvent",
+          { getToken },
+          values
+        );
         if (status === 200) {
           toast.success(data.message);
           formik.resetForm();
@@ -32,7 +38,7 @@ let AddEvent = ({ toast, setEvents }) => {
 
   let eventsData = async () => {
     try {
-      const { data, status } = await getEvents(id);
+      const { data, status } = await get("/api/getEvents", { id: id });
       if (status === 200) {
         setEvents(data.events);
       }

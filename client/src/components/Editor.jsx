@@ -4,7 +4,6 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useFormik } from "formik";
 import styles from "../css/style.module.css";
 import toast from "react-hot-toast";
-import { bulkEdit, getClients } from "./helpers/helper";
 import { useClientStore } from "../store/store";
 let Editor = ({
   showEditor,

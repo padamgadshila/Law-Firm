@@ -7,8 +7,7 @@ import {
   faPenToSquare,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import avatar from "./images/profile.png";
-import { bulkDelete, bulkHide, getClients } from "./helpers/helper";
+import avatar from "../images/profile.png";
 import toast from "react-hot-toast";
 import { useClientStore } from "../store/store";
 let Navigation = ({

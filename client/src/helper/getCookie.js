@@ -4,3 +4,7 @@ export const getCookie = () => {
     .find((row) => row.startsWith("token="))
     ?.split("=")[1];
 };
+
+export const getToken = () => {
+  return `headers: { Authorization: Bearer ${getCookie()} }`;
+};

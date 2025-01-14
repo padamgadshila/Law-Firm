@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { deleteClientData, getClientDocuments } from "./helpers/helper";
-import { getClients } from "./helpers/helper";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 
 let Client = ({
   toast,
   clientData,
-  filterClientDetails,
-  setFilterClientDetails,
-  setCrud,
+  filteredData,
+  setFilteredData,
+  setOperation,
   selectedRecords,
   setSelectedRecords,
   selectedFilter,
-  removeClient,
   setSelectedFilter,
+  removeClient,
   setClientData,
 }) => {
+  const { get, remove } = useAxios();
   const handleCheckboxChange = (id) => {
     if (selectedRecords.includes(id)) {
       setSelectedRecords(selectedRecords.filter((recordId) => recordId !== id));
@@ -26,7 +27,7 @@ let Client = ({
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedRecords(filterClientDetails.map((data) => data._id));
+      setSelectedRecords(filteredData.map((data) => data._id));
     } else {
       setSelectedRecords([]);
     }
@@ -34,13 +35,13 @@ let Client = ({
 
   useEffect(() => {
     if (selectedFilter === "All") {
-      setFilterClientDetails(clientData);
+      setFilteredData(clientData);
     } else if (selectedFilter === "Hidden Clients") {
-      setFilterClientDetails(clientData.filter((data) => data.hide === true));
+      setFilteredData(clientData.filter((data) => data.hide === true));
     } else if (selectedFilter === "Visible Clients") {
-      setFilterClientDetails(clientData.filter((data) => data.hide === false));
+      setFilteredData(clientData.filter((data) => data.hide === false));
     } else {
-      setFilterClientDetails(
+      setFilteredData(
         clientData.filter((data) => {
           return (
             data?.status === selectedFilter || data?.docType === selectedFilter
@@ -48,11 +49,11 @@ let Client = ({
         })
       );
     }
-  }, [selectedFilter, clientData, setFilterClientDetails]);
+  }, [selectedFilter, clientData, setFilteredData]);
 
   useEffect(() => {
-    setCrud(selectedRecords.length > 0);
-  }, [selectedRecords, setCrud]);
+    setOperation(selectedRecords.length > 0);
+  }, [selectedRecords, setOperation]);
 
   // useEffect(() => {
   //   if (query.filter && query.search) {
@@ -91,7 +92,11 @@ let Client = ({
 
   const printDocument = async (e) => {
     try {
-      const { data, status } = await getClientDocuments(e._id);
+      const { data, status } = await get(
+        "/api/clientDoc",
+        { getToken },
+        { id: e._id }
+      );
 
       const printableContent = `
   <!DOCTYPE html>
@@ -341,7 +346,7 @@ let Client = ({
                 onChange={handleSelectAll}
                 checked={
                   selectedRecords.length > 0 &&
-                  selectedRecords.length === filterClientDetails.length
+                  selectedRecords.length === filteredData.length
                 }
               />
             ) : (
@@ -368,13 +373,11 @@ let Client = ({
       </tr>
     </thead>
   );
-  const TableBody = ({ filterClientDetails }) => {
+  const TableBody = ({ filteredData }) => {
     return (
       <tbody>
-        {filterClientDetails.length !== 0 ? (
-          filterClientDetails.map((data, i) => (
-            <TableRows data={data} key={i} />
-          ))
+        {filteredData.length !== 0 ? (
+          filteredData.map((data, i) => <TableRows data={data} key={i} />)
         ) : (
           <tr>
             <td className="px-4 py-2 border text-center" colSpan="100%">
@@ -388,11 +391,11 @@ let Client = ({
 
   const getClientData = async () => {
     try {
-      const { data, status } = await getClients();
-      if (status === 201) {
+      const { data, status } = await get("/api/getClients", { getToken });
+      if (status === 200) {
         setClientData(data.clientData);
         // setOriginalClientData(data.clientData);
-        // setFilterClientDetails(data.clientData);
+        // setFilteredData(data.clientData);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Error fetching data.");
@@ -405,7 +408,11 @@ let Client = ({
 
   const deleteClient = async (_id) => {
     try {
-      const { data, status } = await deleteClientData(_id);
+      const { data, status } = await remove(
+        "/api/deleteClient",
+        { id: _id },
+        { getToken }
+      );
       if (status === 201) {
         toast.success(data.message);
         removeClient(_id);
@@ -421,7 +428,7 @@ let Client = ({
       <table className="border-collapse w-full text-left table-auto">
         <TableHeader isAdmin={role === "admin"} />
         <TableBody
-          filterClientDetails={filterClientDetails}
+          filteredData={filteredData}
           isAdmin={role === "admin"}
           deleteClient={deleteClient}
         />

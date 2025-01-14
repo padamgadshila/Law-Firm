@@ -1,11 +1,13 @@
 import React from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import { addEmployee, sendMail } from "./helpers/helper";
 import { toast, Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let AddEmployee = () => {
   const navigate = useNavigate();
+  const { post } = useAxios();
 
   const formik = useFormik({
     initialValues: {
@@ -19,14 +21,19 @@ let AddEmployee = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        const addEmployeeResponse = await addEmployee(values);
-        if (addEmployeeResponse.status === 201) {
+        const addEmployeeResponse = await post("/api/addEmployee", values, {
+          getToken,
+        });
+        if (addEmployeeResponse.status === 200) {
           toast.success(addEmployeeResponse.data.message);
-          await toast.promise(sendMail(addEmployeeResponse.data.mail), {
-            loading: "Sending email...",
-            success: "Email sent successfully!",
-            error: "Failed to send email.",
-          });
+          await toast.promise(
+            post("/api/sendMail", addEmployeeResponse.data.mail),
+            {
+              loading: "Sending email...",
+              success: "Email sent successfully!",
+              error: "Failed to send email.",
+            }
+          );
           setInterval(() => {
             navigate("/admin");
           }, 2200);

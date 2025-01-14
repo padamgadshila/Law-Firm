@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEvent } from "../store/store";
-import { dashboardData, deleteEvent } from "./helpers/helper";
 let Dashboard = ({ toast, setEvents, events }) => {
   const id = localStorage.getItem("id");
   let [Totals, setTotals] = useState([{}]);

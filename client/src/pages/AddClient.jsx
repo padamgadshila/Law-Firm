@@ -1,10 +1,12 @@
 import React from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import { addClientInfo } from "./helpers/helper";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 let AddClient = () => {
+  const { post } = useAxios();
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -26,8 +28,10 @@ let AddClient = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let { data, status } = await addClientInfo(values);
-        if (status === 201) {
+        let { data, status } = await post("/api/addClient", values, {
+          getToken,
+        });
+        if (status === 200) {
           toast.success("Client Info saved..!");
           navigate(`/addClientDocuments?id=${data._id}`);
         }
