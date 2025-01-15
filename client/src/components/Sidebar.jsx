@@ -31,13 +31,7 @@ let Sidebar = ({
     {
       name: "Client",
       icon: faUser,
-      option: [
-        { name: "Add client", link: "/addClient" },
-        {
-          name: "Upload",
-          click: handleAddDocumentDisplay,
-        },
-      ],
+      option: [{ name: "Add client", link: "/addClient" }],
     },
     {
       name: "Add Event",

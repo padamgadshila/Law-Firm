@@ -265,7 +265,7 @@ export let getClientsDocs = async (req, res) => {
     const cid = req.query.id;
     const id = getId(cid);
 
-    const docs = await Files.findOne({ userId: id });
+    const docs = await Info.findOne({ clientId: id });
 
     return res.status(200).json({ docs });
   } catch (error) {
