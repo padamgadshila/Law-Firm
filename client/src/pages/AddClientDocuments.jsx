@@ -59,11 +59,11 @@ let AddClientDocuments = () => {
           const role = localStorage.getItem("role");
           console.log(role === "Admin");
           formik.resetForm();
-          // if (role === "Admin") {
-          //   navigate("/admin");
-          // } else if (role === "Employee") {
-          //   navigate("/employee");
-          // }
+          if (role === "Admin") {
+            navigate("/admin");
+          } else if (role === "Employee") {
+            navigate("/employee");
+          }
         }
       } catch (error) {
         toast.error(error.response.data.error);
