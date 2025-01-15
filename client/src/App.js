@@ -17,6 +17,7 @@ import EditClient from "./pages/EditClient";
 import EditEmployee from "./pages/EditEmployee";
 import UpdateProfile from "./pages/UpdateProfile";
 import ViewDocuments from "./components/ViewDocuments";
+import PreviewClient from "./pages/PreviewClient";
 
 const router = createBrowserRouter([
   {
@@ -105,6 +106,14 @@ const router = createBrowserRouter([
     element: (
       <AuthorizeUser>
         <UpdateProfile />
+      </AuthorizeUser>
+    ),
+  },
+  {
+    path: "/preview",
+    element: (
+      <AuthorizeUser>
+        <PreviewClient />
       </AuthorizeUser>
     ),
   },

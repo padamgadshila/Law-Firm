@@ -3,6 +3,7 @@ import Files from "../models/files.model.js";
 import { getId } from "../helper/getObjectId.js";
 import path from "path";
 import fs from "fs";
+import Info from "../models/info.model.js";
 
 // add clients
 export let addClient = async (req, res) => {
@@ -49,14 +50,14 @@ export let addClient = async (req, res) => {
 // add clients documents
 export let addClientDocument = async (req, res) => {
   try {
-    const { _id, info } = req.body;
-    const id = getId(_id);
+    const { clientId, documentNo, village, gatNo, year, extraInfo } = req.body;
+    const id = getId(clientId);
 
     const update = await Client.findOneAndUpdate(
       { _id: id },
       { fileUploaded: "Yes" }
     );
-    const check = await Files.findOne({ userId: id });
+    const check = await Info.findOne({ clientId: clientId });
     if (check) {
       return res.status(409).json({ error: "Documents already uploaded..!" });
     }
@@ -77,16 +78,22 @@ export let addClientDocument = async (req, res) => {
         docs.push(fileData);
       }
     }
-    const data = await Files.create({
-      userId: id,
+    const data = await Info.create({
+      clientId: id,
+      documentNo: documentNo,
+      village: village,
+      gatNo: gatNo,
+      year: year,
+      extraInfo: extraInfo,
       document: docs,
-      info: info,
     });
 
     return res
       .status(200)
       .json({ message: "Documents uploaded..!", user: data });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error: "Server Error" });
   }
 };

@@ -16,7 +16,6 @@ import {
   getProfile,
   getProfilePic,
   login,
-  resetDocNoCounter,
   resetPassword,
   updateProfile,
   verifyEmail,
@@ -97,7 +96,7 @@ userRouter.post("/bulkDelete", authorize("Admin"), bulkDelete);
 userRouter.post("/bulkHide", authorize("Admin"), bulkHide);
 
 // Reset Document no counter
-userRouter.put("/resetCounter", resetDocNoCounter);
+// userRouter.put("/resetCounter", resetDocNoCounter);
 
 // Bulk Edit
 userRouter.post("/bulkEdit", authorize("Admin"), bulkEdit);

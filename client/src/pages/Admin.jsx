@@ -25,6 +25,7 @@ import Employee from "../components/Employee";
 import Documents from "../components/Documents";
 import Editor from "../components/Editor";
 import AddEvent from "../components/AddEvent";
+import AddClientDocuments from "./AddClientDocuments";
 
 let Admin = () => {
   // import all the states
@@ -182,8 +183,8 @@ let Admin = () => {
           {activeTab === 0 && (
             <Dashboard events={events} setEvents={setEvents} toast={toast} />
           )}
-
-          {activeTab === 1 && (
+          {activeTab === 1 && <AddClientDocuments />}
+          {activeTab === 2 && (
             <Client
               toast={toast}
               clientData={clientData}
@@ -199,12 +200,12 @@ let Admin = () => {
             />
           )}
           {/* Add Event */}
-          {activeTab === 2 && (
+          {activeTab === 3 && (
             <AddEvent toast={toast} events={events} setEvents={setEvents} />
           )}
-          {activeTab === 3 && <div>Statics</div>}
-          {activeTab === 4 && <div>Others</div>}
-          {activeTab === 5 && <Employee toast={toast} />}
+          {activeTab === 4 && <div>Statics</div>}
+          {activeTab === 5 && <div>Others</div>}
+          {activeTab === 6 && <Employee toast={toast} />}
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import {
   faGears,
   faChartLine,
   faGear,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
@@ -22,6 +23,11 @@ let Sidebar = ({
 }) => {
   let tabs = [
     { name: "Dashboard", icon: faTachometerAlt, option: [] },
+    {
+      name: "Upload",
+      icon: faUpload,
+      option: [],
+    },
     {
       name: "Client",
       icon: faUser,

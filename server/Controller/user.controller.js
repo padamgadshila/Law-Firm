@@ -1,7 +1,7 @@
 import generateToken from "../auth/generate.token.js";
 import { usernamePasswordGenerate } from "../helper/username.password.generator.js";
 import User from "../models/user.model.js";
-import Client, { DocNoCounter } from "../models/client.model.js";
+import Client from "../models/client.model.js";
 import Files from "../models/files.model.js";
 import Event from "../models/event.model.js";
 import bcrypt from "bcryptjs";
@@ -469,21 +469,21 @@ export let bulkHide = async (req, res) => {
   }
 };
 
-// Reset Document no counter
-export const resetDocNoCounter = async (req, res) => {
-  try {
-    const result = await DocNoCounter.updateOne(
-      {},
-      { $set: { sequenceValue: 0 } },
-      { upsert: true }
-    );
-    return res
-      .status(200)
-      .json({ message: "Counter reset successfully.", result });
-  } catch (error) {
-    return res.status(500).json({ error: "Server error" });
-  }
-};
+// // Reset Document no counter
+// export const resetDocNoCounter = async (req, res) => {
+//   try {
+//     const result = await DocNoCounter.updateOne(
+//       {},
+//       { $set: { sequenceValue: 0 } },
+//       { upsert: true }
+//     );
+//     return res
+//       .status(200)
+//       .json({ message: "Counter reset successfully.", result });
+//   } catch (error) {
+//     return res.status(500).json({ error: "Server error" });
+//   }
+// };
 
 // Bulk Edit
 export let bulkEdit = async (req, res) => {

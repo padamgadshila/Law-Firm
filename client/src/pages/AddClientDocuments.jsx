@@ -13,7 +13,7 @@ let AddClientDocuments = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { post } = useAxios();
-
+  const [docYear, setDocYear] = useState(null);
   const id = location.search.split("=")[1];
 
   const [documents, setDocuments] = useState([
@@ -26,8 +26,11 @@ let AddClientDocuments = () => {
 
   const formik = useFormik({
     initialValues: {
-      info: "",
-      _id: id,
+      clientId: id,
+      documentNo: "",
+      village: "",
+      gatNo: "",
+      extraInfo: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -40,8 +43,12 @@ let AddClientDocuments = () => {
           formData.append(`document-${i}`, doc.document);
         });
 
-        formData.append("info", JSON.stringify(values.info));
-        formData.append("_id", JSON.stringify(values._id));
+        formData.append("extraInfo", JSON.stringify(values.extraInfo));
+        formData.append("documentNo", JSON.stringify(values.documentNo));
+        formData.append("village", JSON.stringify(values.village));
+        formData.append("gatNo", JSON.stringify(values.gatNo));
+        formData.append("clientId", JSON.stringify(values.clientId));
+        formData.append("year", JSON.stringify(docYear));
         const { data, status } = await post(
           "/api/addClientDocument",
           formData,
@@ -51,12 +58,12 @@ let AddClientDocuments = () => {
           toast.success(data.message);
           const role = localStorage.getItem("role");
           console.log(role === "Admin");
-
-          if (role === "Admin") {
-            navigate("/admin");
-          } else if (role === "Employee") {
-            navigate("/employee");
-          }
+          formik.resetForm();
+          // if (role === "Admin") {
+          //   navigate("/admin");
+          // } else if (role === "Employee") {
+          //   navigate("/employee");
+          // }
         }
       } catch (error) {
         toast.error(error.response.data.error);
@@ -113,17 +120,83 @@ let AddClientDocuments = () => {
   // );
 
   return (
-    <div className="w-full h-full flex justify-center">
-      <Toaster />
-      <form
-        className="border w-[650px] p-5 rounded-md shadow-md mt-5"
-        onSubmit={formik.handleSubmit}
-      >
-        <h1 className="text-4xl font-bold text-center">Client Documents</h1>
+    <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
+      <form className="w-[650px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
+        <h1 className="text-4xl font-bold text-center">Uploads</h1>
+        <div className="flex gap-2">
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Client Id</label>
+            <input
+              className={styles.input}
+              placeholder="Client Id"
+              {...formik.getFieldProps("clientId")}
+            />
+          </div>
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Village name</label>
+            <input
+              className={styles.input}
+              placeholder="Village name"
+              {...formik.getFieldProps("village")}
+            />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Gat No.</label>
+            <input
+              className={styles.input}
+              placeholder="Gat No."
+              {...formik.getFieldProps("gatNo")}
+            />
+          </div>
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Document Type</label>
+            <select
+              id="type"
+              {...formik.getFieldProps("docType")}
+              className={styles.input}
+            >
+              <option value="" disabled={true}>
+                Select Type
+              </option>
+              <option value="Notary">Notary</option>
+              <option value="Sub-Registrar">Sub-Registrar</option>
+              <option value="Only Type">Only Type</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Document No.</label>
+            <input
+              className={styles.input}
+              placeholder="Document No."
+              {...formik.getFieldProps("documentNo")}
+            />
+          </div>
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Year No.</label>
+            <select
+              className={styles.input}
+              value={docYear}
+              onChange={(e) => setDocYear(e.target.value)}
+            >
+              <option value="" disabled={true}>
+                Select Year
+              </option>
+              {[...Array(2025 - 1940)].map((_, index) => (
+                <option key={index} value={2025 - index}>
+                  {2025 - index}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         {documents.map((doc, i) => (
           <div className="w-full flex gap-2" key={i}>
             <div className="w-full flex flex-col my-2">
-              <label className="text-xl ml-1">Document Type</label>
+              <label className="text-xl ml-1">Upload Type</label>
               <select
                 className={styles.input}
                 value={doc.documentType}
@@ -184,21 +257,12 @@ let AddClientDocuments = () => {
             className={styles.input}
             style={{ height: "150px" }}
             placeholder="Enter additional information about the document"
-            {...formik.getFieldProps("info")}
+            {...formik.getFieldProps("extraInfo")}
           ></textarea>
         </div>
         <button className={styles.button} type="submit">
           Upload
         </button>
-        <Link
-          to={`${
-            localStorage.getItem("role") === "Admin" ? "/admin" : "/employee"
-          }`}
-          className="mt-4 text-[20px] font-bold text-blue-500 "
-        >
-          <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
-          Back to Home
-        </Link>
       </form>
     </div>
   );
