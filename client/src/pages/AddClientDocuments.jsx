@@ -124,7 +124,7 @@ let AddClientDocuments = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
-      <form className="w-[650px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
+      <form className="w-[750px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
         <h1 className="text-4xl font-bold text-center">Uploads</h1>
         <div className="flex gap-2">
           <div className="w-full flex flex-col my-2">
@@ -210,6 +210,14 @@ let AddClientDocuments = () => {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="w-full flex flex-col my-2">
+              <label className="text-[18px] ml-1">Filename</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Filename"
+              />
             </div>
             <div className="w-full flex flex-col my-2">
               <label className="text-[18px] ml-1">

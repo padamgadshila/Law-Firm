@@ -54,7 +54,7 @@ export let addClientDocument = async (req, res) => {
 
     console.log(req.body);
 
-    const id = getId(clientId);
+    // const id = getId(clientId);
 
     // const update = await Client.findOneAndUpdate(
     //   { _id: id },
@@ -82,7 +82,7 @@ export let addClientDocument = async (req, res) => {
       }
     }
     const data = await Info.create({
-      clientId: id,
+      clientId: clientId,
       documentNo: documentNo,
       village: village,
       gatNo: gatNo,

@@ -63,7 +63,7 @@ let Uploads = ({
             }}
           />
         </td>
-        <td className="px-4 py-2 border">{data._id || "-"}</td>
+        <td className="px-4 py-2 border">{data.clientId || "-"}</td>
         <td className="px-4 py-2 border">{data.documentNo || "-"}</td>
         <td className="px-4 py-2 border">{data.village || "-"}</td>
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
