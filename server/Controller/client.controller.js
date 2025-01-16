@@ -56,10 +56,10 @@ export let addClientDocument = async (req, res) => {
 
     const id = getId(clientId);
 
-    const update = await Client.findOneAndUpdate(
-      { _id: id },
-      { fileUploaded: "Yes" }
-    );
+    // const update = await Client.findOneAndUpdate(
+    //   { _id: id },
+    //   { fileUploaded: "Yes" }
+    // );
     const check = await Info.findOne({ clientId: clientId });
     if (check) {
       return res.status(409).json({ error: "Documents already uploaded..!" });
