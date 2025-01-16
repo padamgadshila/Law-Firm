@@ -64,6 +64,7 @@ let Uploads = ({
           />
         </td>
         <td className="px-4 py-2 border">{data.clientId || "-"}</td>
+        <td className="px-4 py-2 border">{data.filename || "-"}</td>
         <td className="px-4 py-2 border">{data.documentNo || "-"}</td>
         <td className="px-4 py-2 border">{data.village || "-"}</td>
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
@@ -120,6 +121,7 @@ let Uploads = ({
         {[
           "Select",
           "Client Id",
+          "Filename",
           "Document No",
           "Village",
           "Gat No",

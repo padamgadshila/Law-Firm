@@ -8,6 +8,7 @@ const infoSchema = new mongoose.Schema(
     gatNo: { type: String },
     document: {},
     year: { type: String },
+    filename: { type: String },
     extraInfo: { type: String },
   },
   { timestamps: true }
