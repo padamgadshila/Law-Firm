@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import avatar from "../images/profile.png";
 import toast from "react-hot-toast";
-import { useClientStore } from "../store/store";
+import { useClientStore, useUniversalSearch } from "../store/store";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let Navigation = ({
@@ -31,6 +31,7 @@ let Navigation = ({
   setSelectedFilter,
   clientData,
   setClientData,
+  setShowSearch,
 }) => {
   const { post, get } = useAxios();
   const token = getToken();
@@ -120,6 +121,21 @@ let Navigation = ({
     setSelectedFilter(e.target.value);
   };
 
+  // universal search
+  let search = useUniversalSearch((state) => state.search);
+  let setSearch = useUniversalSearch((state) => state.setSearch);
+
+  let handleSearch = (e) => {
+    let value = e.target.value.toLowerCase();
+    setSearch(value);
+
+    if (value !== "") {
+      setShowSearch(true);
+    } else {
+      setShowSearch(false);
+    }
+  };
+
   return (
     <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white shadow-lg flex items-center justify-between w-full mx-auto h-[70px]">
       <div
@@ -160,7 +176,21 @@ let Navigation = ({
           {profile.username || "Admin"}
         </h1>
       </div>
-      {(activeTab === 2 || activeTab === 0) && (
+      {/* universal search */}
+      {activeTab === 0 && (
+        <div className="flex items-center gap-1">
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={handleSearch}
+            name="search"
+            className="bg-white text-black w-[600px] h-[60px] rounded-xl outline-none pl-3 text-xl"
+          />
+        </div>
+      )}
+
+      {activeTab === 3 && (
         <div className="flex items-center gap-1">
           <input
             type="text"

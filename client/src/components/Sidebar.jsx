@@ -10,6 +10,7 @@ import {
   faChartLine,
   faGear,
   faUpload,
+  faFile,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
@@ -26,6 +27,11 @@ let Sidebar = ({
     {
       name: "Upload",
       icon: faUpload,
+      option: [],
+    },
+    {
+      name: "Documents",
+      icon: faFile,
       option: [],
     },
     {

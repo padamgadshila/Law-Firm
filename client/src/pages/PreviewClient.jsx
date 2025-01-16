@@ -1,277 +1,206 @@
-import React, { useState } from "react";
+// PreviewClient.jsx
+import React, { useEffect, useState } from "react";
 
-function PreviewClient() {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [clientId, setClientId] = useState("");
-  const [villageName, setVillageName] = useState("");
-  const [gatNo, setGatNo] = useState("");
-  const [typeDoc, setTypeDoc] = useState("1");
-  const [notaryType, setNotaryType] = useState("");
-  const [docNo, setDocNo] = useState("");
-  const [docYear, setDocYear] = useState("");
+const PreviewClient = () => {
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("");
+  const [selectAll, setSelectAll] = useState(false);
 
-  const MAX_FILES = 10;
+  // Fetch data from localStorage on component mount
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("uploadedData")) || [];
+    setData(storedData);
+  }, []);
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-
-    if (files.length + selectedFiles.length > MAX_FILES) {
-      alert(`You can upload a maximum of ${MAX_FILES} documents.`);
-      return;
+  // Handle search and filter
+  const filteredData = data.filter((entry) => {
+    if (filter && entry[filter]) {
+      return entry[filter]
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     }
+    return Object.values(entry).some((value) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+  // Edit entry (redirect to another page)
+  const handleEdit = (index) => {
+    const entry = data[index];
+    localStorage.setItem("editEntry", JSON.stringify(entry));
+    window.location.href = "/upload"; // Update with your upload page route
   };
 
-  const handleDeleteImage = (index) => {
-    const updatedFiles = [...selectedFiles];
-    updatedFiles.splice(index, 1);
-    setSelectedFiles(updatedFiles);
+  // Delete a single entry
+  const handleDelete = (index) => {
+    const confirmation = window.confirm(
+      `Are you sure you want to delete the entry for Client ID: ${data[index].clientId}?`
+    );
+    if (confirmation) {
+      const updatedData = [...data];
+      updatedData.splice(index, 1);
+      setData(updatedData);
+      localStorage.setItem("uploadedData", JSON.stringify(updatedData));
+    }
   };
 
-  const handleFinalClick = () => {
-    setModalOpen(true);
+  // Delete selected entries
+  const handleDeleteSelected = () => {
+    const selectedIndices = data
+      .map((_, index) => document.getElementById(`checkbox-${index}`).checked)
+      .map((isChecked, index) => (isChecked ? index : -1))
+      .filter((index) => index !== -1);
+
+    if (selectedIndices.length > 0) {
+      const confirmation = window.confirm(
+        "Are you sure you want to delete the selected entries?"
+      );
+      if (confirmation) {
+        const updatedData = data.filter(
+          (_, index) => !selectedIndices.includes(index)
+        );
+        setData(updatedData);
+        localStorage.setItem("uploadedData", JSON.stringify(updatedData));
+      }
+    } else {
+      alert("No entries selected for deletion.");
+    }
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-  const handleEditClick = () => {
-    document.getElementById("file-upload").click();
+  // Toggle "Select All" checkboxes
+  const handleSelectAll = (e) => {
+    setSelectAll(e.target.checked);
+    data.forEach((_, index) => {
+      document.getElementById(`checkbox-${index}`).checked = e.target.checked;
+    });
   };
 
   return (
     <div className="container mx-auto p-6 bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto">
-        <h2 className="text-2xl text-center mb-6">Upload Tab</h2>
-        <form>
-          {/* Client ID */}
-          <div className="mb-4">
-            <label htmlFor="client-id" className="block font-bold mb-2">
-              Client ID
-            </label>
-            <input
-              type="text"
-              id="client-id"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Enter Client ID"
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
-            />
-          </div>
+      <h2 className="text-2xl font-bold text-gray-700 mb-4">Saved Documents</h2>
 
-          {/* Village Name */}
-          <div className="mb-4">
-            <label htmlFor="village-name" className="block font-bold mb-2">
-              Village Name
-            </label>
-            <input
-              type="text"
-              id="village-name"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Enter Village Name"
-              value={villageName}
-              onChange={(e) => setVillageName(e.target.value)}
-            />
-          </div>
-
-          {/* Gat No. */}
-          <div className="mb-4">
-            <label htmlFor="gat-no" className="block font-bold mb-2">
-              Gat No.
-            </label>
-            <input
-              type="text"
-              id="gat-no"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Enter Gat No."
-              value={gatNo}
-              onChange={(e) => setGatNo(e.target.value)}
-            />
-          </div>
-
-          {/* Type of Document */}
-          <div className="mb-4">
-            <label htmlFor="type-doc" className="block font-bold mb-2">
-              Type of Document
-            </label>
-            <select
-              id="type-doc"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              value={typeDoc}
-              onChange={(e) => setTypeDoc(e.target.value)}
-            >
-              <option value="1">Option 1</option>
-              <option value="2">Option 2</option>
-              <option value="3">Option 3</option>
-            </select>
-          </div>
-
-          {/* Notary / Sub-Registrar / Only Type */}
-          <div className="mb-4">
-            <label className="block font-bold mb-2">
-              Notary / Sub-Registrar / Only Type
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="notary-type"
-                  value="notary"
-                  checked={notaryType === "notary"}
-                  onChange={(e) => setNotaryType(e.target.value)}
-                />
-                <span className="ml-2">Notary</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="notary-type"
-                  value="subreg"
-                  checked={notaryType === "subreg"}
-                  onChange={(e) => setNotaryType(e.target.value)}
-                />
-                <span className="ml-2">Sub-Registrar</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="notary-type"
-                  value="only"
-                  checked={notaryType === "only"}
-                  onChange={(e) => setNotaryType(e.target.value)}
-                />
-                <span className="ml-2">Only Type</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Document No. and Year */}
-          <div className="mb-4 flex gap-4">
-            <div className="w-1/2">
-              <label htmlFor="doc-no" className="block font-bold mb-2">
-                Document No.
-              </label>
-              <input
-                type="text"
-                id="doc-no"
-                className="w-full p-3 border border-gray-300 rounded-md"
-                placeholder="Enter Document No."
-                value={docNo}
-                onChange={(e) => setDocNo(e.target.value)}
-              />
-            </div>
-            <div className="w-1/2">
-              <label htmlFor="doc-year" className="block font-bold mb-2">
-                Year
-              </label>
-              <select
-                id="doc-year"
-                className="w-full p-3 border border-gray-300 rounded-md"
-                value={docYear}
-                onChange={(e) => setDocYear(e.target.value)}
-              >
-                <option value="">Select Year</option>
-                {[...Array(2025 - 1940)].map((_, index) => (
-                  <option key={index} value={2025 - index}>
-                    {2025 - index}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* File Upload */}
-          <div className="border-2 border-dashed border-gray-300 p-6 text-center rounded-md mt-6">
-            <input
-              type="file"
-              id="file-upload"
-              multiple
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <label
-              htmlFor="file-upload"
-              className="bg-purple-600 text-white py-2 px-4 rounded-md cursor-pointer"
-            >
-              + Upload Files
-            </label>
-          </div>
-
-          {/* Preview */}
-          <div className="grid grid-cols-4 gap-4 mt-6" id="preview">
-            {selectedFiles.map((file, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  className="w-full h-24 object-cover rounded-md border border-gray-300"
-                />
-                <button
-                  onClick={() => handleDeleteImage(index)}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 text-center"
-                >
-                  &times;
-                </button>
-              </div>
-            ))}
-          </div>
-          {/* Actions */}
-          <div className="flex justify-between mt-6">
-            <button
-              type="button"
-              className="bg-green-500 text-white py-2 px-4 rounded-md"
-              onClick={handleFinalClick}
-            >
-              Final
-            </button>
-            <button
-              type="button"
-              className="bg-orange-500 text-white py-2 px-4 rounded-md"
-              onClick={handleEditClick}
-            >
-              Add img
-            </button>
-            <button
-              type="button"
-              className="bg-blue-500 text-white py-2 px-4 rounded-md"
-            >
-              Upload
-            </button>
-          </div>
-        </form>
+      {/* Actions Bar */}
+      <div className="flex justify-between items-center mb-6">
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600"
+          onClick={handleDeleteSelected}
+        >
+          Delete Selected
+        </button>
+        <div>
+          <input
+            type="checkbox"
+            id="select-all"
+            checked={selectAll}
+            onChange={handleSelectAll}
+            className="mr-2"
+          />
+          <label htmlFor="select-all" className="text-gray-700">
+            Select All
+          </label>
+        </div>
       </div>
 
-      {/* Modal for Document Preview */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-3xl w-full">
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-4 right-4 bg-red-500 text-white rounded-full w-8 h-8 text-center"
-            >
-              &times;
-            </button>
-            <h3 className="text-xl text-center mb-4">
-              Uploaded Document Preview
-            </h3>
-            <div className="grid grid-cols-4 gap-4">
-              {selectedFiles.map((file, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(file)}
-                  alt="modal preview"
-                  className="w-full h-24 object-cover rounded-md border border-gray-300"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Search Bar */}
+      <div className="flex gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
+        />
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
+        >
+          <option value="">Select Filter</option>
+          <option value="clientId">Client ID</option>
+          <option value="gatNo">Gat No.</option>
+          <option value="typeDoc">Type of Document</option>
+          <option value="docNo">Document No.</option>
+          <option value="year">Year</option>
+        </select>
+      </div>
+
+      {/* Table */}
+      <table className="w-full border-collapse bg-white shadow rounded-md overflow-hidden">
+        <thead>
+          <tr className="bg-indigo-600 text-white">
+            <th className="p-4 text-left">Select</th>
+            <th className="p-4 text-left">Client ID</th>
+            <th className="p-4 text-left">Village Name</th>
+            <th className="p-4 text-left">Gat No.</th>
+            <th className="p-4 text-left">Type of Document</th>
+            <th className="p-4 text-left">Document No.</th>
+            <th className="p-4 text-left">Year</th>
+            <th className="p-4 text-left">Additional Option</th>
+            <th className="p-4 text-left">Uploaded Documents</th>
+            <th className="p-4 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.length === 0 ? (
+            <tr>
+              <td colSpan="10" className="p-4 text-center text-gray-500">
+                No matching data found.
+              </td>
+            </tr>
+          ) : (
+            filteredData.map((entry, index) => (
+              <tr key={index} className="border-b">
+                <td className="p-4">
+                  <input
+                    type="checkbox"
+                    id={`checkbox-${index}`}
+                    className="cursor-pointer"
+                  />
+                </td>
+                <td className="p-4">{entry.clientId}</td>
+                <td className="p-4">{entry.villageName}</td>
+                <td className="p-4">{entry.gatNo}</td>
+                <td className="p-4">{entry.typeDoc}</td>
+                <td className="p-4">{entry.docNo}</td>
+                <td className="p-4">{entry.year}</td>
+                <td className="p-4">{entry.additionalOption}</td>
+                <td className="p-4">
+                  <div className="flex gap-2">
+                    {entry.images.map((image, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={image}
+                        alt="Document"
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                    ))}
+                  </div>
+                </td>
+                <td className="p-4">
+                  <div className="flex gap-2">
+                    <button
+                      className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                      onClick={() => handleEdit(index)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                      onClick={() => handleDelete(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
   );
-}
+};
 
 export default PreviewClient;

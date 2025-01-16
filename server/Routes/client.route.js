@@ -7,6 +7,7 @@ import {
   getClientById,
   getClients,
   getClientsDocs,
+  getUploads,
   updateClient,
   updateClientDocument,
 } from "../controller/client.controller.js";
@@ -70,4 +71,6 @@ clientRouter.put(
   updateClient
 );
 
+// get uploaded
+clientRouter.get("/getUploaded", authorize(["Admin", "Employee"]), getUploads);
 export default clientRouter;

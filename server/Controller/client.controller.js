@@ -51,6 +51,9 @@ export let addClient = async (req, res) => {
 export let addClientDocument = async (req, res) => {
   try {
     const { clientId, documentNo, village, gatNo, year, extraInfo } = req.body;
+
+    console.log(req.body);
+
     const id = getId(clientId);
 
     const update = await Client.findOneAndUpdate(
@@ -328,6 +331,17 @@ export let updateClient = async (req, res) => {
     });
 
     return res.status(200).json({ message: "Client details updated..!" });
+  } catch (error) {
+    return res.status(500).json({ error: "Server Error" });
+  }
+};
+
+// get all uploaded data
+export let getUploads = async (req, res) => {
+  try {
+    const data = await Info.find();
+
+    return res.status(200).json({ data });
   } catch (error) {
     return res.status(500).json({ error: "Server Error" });
   }

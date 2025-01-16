@@ -7,15 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
+import { useActiveTab } from "../store/store";
 
 let AddClientDocuments = () => {
   const token = getToken();
   const navigate = useNavigate();
   const location = useLocation();
   const { post } = useAxios();
-  const [docYear, setDocYear] = useState(null);
   const id = location.search.split("=")[1];
-
+  const setActiveTab = useActiveTab((state) => state.setActiveTab);
   const [documents, setDocuments] = useState([
     {
       documentType: "",
@@ -26,11 +26,12 @@ let AddClientDocuments = () => {
 
   const formik = useFormik({
     initialValues: {
-      clientId: id,
+      clientId: id || "",
       documentNo: "",
       village: "",
       gatNo: "",
       extraInfo: "",
+      year: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -43,12 +44,12 @@ let AddClientDocuments = () => {
           formData.append(`document-${i}`, doc.document);
         });
 
-        formData.append("extraInfo", JSON.stringify(values.extraInfo));
-        formData.append("documentNo", JSON.stringify(values.documentNo));
-        formData.append("village", JSON.stringify(values.village));
-        formData.append("gatNo", JSON.stringify(values.gatNo));
-        formData.append("clientId", JSON.stringify(values.clientId));
-        formData.append("year", JSON.stringify(docYear));
+        formData.append("extraInfo", values.extraInfo);
+        formData.append("documentNo", values.documentNo);
+        formData.append("village", values.village);
+        formData.append("gatNo", values.gatNo);
+        formData.append("clientId", values.clientId);
+        formData.append("year", values.year);
         const { data, status } = await post(
           "/api/addClientDocument",
           formData,
@@ -56,6 +57,7 @@ let AddClientDocuments = () => {
         );
         if (status === 200) {
           toast.success(data.message);
+          setActiveTab(2);
           const role = localStorage.getItem("role");
           console.log(role === "Admin");
           formik.resetForm();
@@ -70,7 +72,14 @@ let AddClientDocuments = () => {
       }
     },
   });
+  const currentYear = 2025;
+  const startYear = 1940;
+  const years = [];
 
+  // Generate years from 2025 to 1940
+  for (let year = currentYear; year >= startYear; year--) {
+    years.push(year);
+  }
   const addDocuments = () => {
     setDocuments([
       ...documents,
@@ -94,8 +103,6 @@ let AddClientDocuments = () => {
     setDocuments(updatedDocuments);
   };
 
-  // useEffect(() => {}, [documents]);
-
   const docTypes = [
     "Client Photo",
     "Client Signature",
@@ -114,10 +121,6 @@ let AddClientDocuments = () => {
       .filter(Boolean);
     return docTypes.filter((type) => !selectedTypes.includes(type));
   };
-
-  // const isAddMoreDisabled = documents.every(
-  //   (doc) => doc.document === "" && doc.document !== "Select the file"
-  // );
 
   return (
     <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
@@ -177,17 +180,13 @@ let AddClientDocuments = () => {
           </div>
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Year No.</label>
-            <select
-              className={styles.input}
-              value={docYear}
-              onChange={(e) => setDocYear(e.target.value)}
-            >
+            <select className={styles.input} {...formik.getFieldProps("year")}>
               <option value="" disabled={true}>
                 Select Year
               </option>
-              {[...Array(2025 - 1940)].map((_, index) => (
-                <option key={index} value={2025 - index}>
-                  {2025 - index}
+              {years.map((y, i) => (
+                <option key={i} value={y}>
+                  {y}
                 </option>
               ))}
             </select>

@@ -14,7 +14,9 @@ import {
   useProfile,
   useSelectRecords,
   useShowProfile,
+  useShowSearchResults,
   useSidebar,
+  useUploads,
 } from "../store/store";
 import Profile from "../components/Profile";
 import Navigation from "../components/Navigation";
@@ -26,6 +28,7 @@ import Documents from "../components/Documents";
 import Editor from "../components/Editor";
 import AddEvent from "../components/AddEvent";
 import AddClientDocuments from "./AddClientDocuments";
+import Uploads from "../components/Uploads";
 
 let Admin = () => {
   // import all the states
@@ -77,6 +80,12 @@ let Admin = () => {
   let showEditor = useEditor((state) => state.showEditor);
   let setShowEditor = useEditor((state) => state.setShowEditor);
 
+  let uploadedData = useUploads((state) => state.uploadedData);
+  let setUploadedData = useUploads((state) => state.setUploadedData);
+  let removeUploadedData = useUploads((state) => state.removeUploadedData);
+
+  let showSearch = useShowSearchResults((state) => state.showSearch);
+  let setShowSearch = useShowSearchResults((state) => state.setShowSearch);
   // set all the data
 
   // TABS DATA
@@ -162,6 +171,7 @@ let Admin = () => {
         setSelectedFilter={setSelectedFilter}
         clientData={clientData}
         setClientData={setClientData}
+        setShowSearch={setShowSearch}
       />
       {/* Main Page */}
       <div className="flex">
@@ -185,6 +195,17 @@ let Admin = () => {
           )}
           {activeTab === 1 && <AddClientDocuments />}
           {activeTab === 2 && (
+            <Uploads
+              uploadedData={uploadedData}
+              setUploadedData={setUploadedData}
+              removeUploadedData={removeUploadedData}
+              setSelectedRecords={setSelectedRecords}
+              selectedRecords={selectedRecords}
+              showSearch={showSearch}
+              setShowSearch={setShowSearch}
+            />
+          )}
+          {activeTab === 3 && (
             <Client
               toast={toast}
               clientData={clientData}
@@ -200,12 +221,12 @@ let Admin = () => {
             />
           )}
           {/* Add Event */}
-          {activeTab === 3 && (
+          {activeTab === 4 && (
             <AddEvent toast={toast} events={events} setEvents={setEvents} />
           )}
-          {activeTab === 4 && <div>Statics</div>}
-          {activeTab === 5 && <div>Others</div>}
-          {activeTab === 6 && <Employee toast={toast} />}
+          {activeTab === 5 && <div>Statics</div>}
+          {activeTab === 6 && <div>Others</div>}
+          {activeTab === 7 && <Employee toast={toast} />}
         </div>
       </div>
 
@@ -226,6 +247,15 @@ let Admin = () => {
         removeSelectedRecords={removeSelectedRecords}
         removeClient={removeClient}
       />
+
+      {/* universal search page */}
+      <div
+        className={`w-full h-[calc(100%-80px)] border absolute top-[80px] left-0 bg-white p-5 ${
+          showSearch ? "block" : "hidden"
+        }`}
+      >
+        <h1 className="text-4xl">Universal Search Results</h1>
+      </div>
     </div>
   );
 };

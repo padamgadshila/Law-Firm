@@ -30,6 +30,15 @@ export let useEmployeeStore = create((set) => ({
     })),
 }));
 
+export let useUploads = create((set) => ({
+  uploadedData: [],
+  setUploadedData: (data) => set({ uploadedData: data }),
+  removeUploadedData: (id) =>
+    set((state) => ({
+      uploadedData: state.uploadedData.filter((upload) => upload._id !== id),
+    })),
+}));
+
 export let useEvent = create((set) => ({
   events: [],
   setEvents: (data) => set({ events: data }),
@@ -87,6 +96,15 @@ export let useInput = create((set) => ({
   setInputSearch: (data) => set({ inputSearch: data }),
 }));
 
+export let useUniversalSearch = create((set) => ({
+  search: "",
+  setSearch: (data) => set({ search: data }),
+}));
+
+export let useShowSearchResults = create((set) => ({
+  showSearch: false,
+  setShowSearch: (data) => set({ showSearch: data }),
+}));
 export let useFilter = create((set) => ({
   selectedFilter: "Visible Clients",
   setSelectedFilter: (data) => set({ selectedFilter: data }),
