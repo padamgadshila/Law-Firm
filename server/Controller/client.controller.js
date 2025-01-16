@@ -50,8 +50,7 @@ export let addClient = async (req, res) => {
 // add clients documents
 export let addClientDocument = async (req, res) => {
   try {
-    const { clientId, filename, documentNo, village, gatNo, year, extraInfo } =
-      req.body;
+    const { clientId, documentNo, village, gatNo, year, extraInfo } = req.body;
 
     console.log(req.body);
 
@@ -87,7 +86,6 @@ export let addClientDocument = async (req, res) => {
       documentNo: documentNo,
       village: village,
       gatNo: gatNo,
-      filename: filename,
       year: year,
       extraInfo: extraInfo,
       document: docs,

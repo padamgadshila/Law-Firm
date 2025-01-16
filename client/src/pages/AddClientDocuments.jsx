@@ -32,7 +32,6 @@ let AddClientDocuments = () => {
       gatNo: "",
       extraInfo: "",
       year: "",
-      filename: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -51,7 +50,6 @@ let AddClientDocuments = () => {
         formData.append("gatNo", values.gatNo);
         formData.append("clientId", values.clientId);
         formData.append("year", values.year);
-        formData.append("filename", values.filename);
         const { data, status } = await post(
           "/api/addClientDocument",
           formData,
@@ -126,17 +124,9 @@ let AddClientDocuments = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
-      <form className="w-[650px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
+      <form className="w-[700px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
         <h1 className="text-4xl font-bold text-center">Uploads</h1>
         <div className="flex gap-2">
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">File name</label>
-            <input
-              className={styles.input}
-              placeholder="File name"
-              {...formik.getFieldProps("filename")}
-            />
-          </div>
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Client Id</label>
             <input
@@ -220,6 +210,14 @@ let AddClientDocuments = () => {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="w-full flex flex-col my-2">
+              <label className="text-[18px] ml-1">Filename</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Filename"
+              />
             </div>
             <div className="w-full flex flex-col my-2">
               <label className="text-[18px] ml-1">
