@@ -63,8 +63,7 @@ let Uploads = ({
             }}
           />
         </td>
-        <td className="px-4 py-2 border">{data.clientId || "-"}</td>
-        <td className="px-4 py-2 border">{data.filename || "-"}</td>
+        <td className="px-4 py-2 border">{data._id || "-"}</td>
         <td className="px-4 py-2 border">{data.documentNo || "-"}</td>
         <td className="px-4 py-2 border">{data.village || "-"}</td>
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
@@ -72,7 +71,7 @@ let Uploads = ({
         <td className="px-4 py-2 border">{data.extraInfo || "-"}</td>
         <td className="px-4 py-2 border text-center cursor-pointer">
           <Link
-            to={`/edit?id=${data._id}`}
+            to={`/editUploads?id=${data._id}`}
             className="block px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
           >
             Edit
@@ -121,7 +120,6 @@ let Uploads = ({
         {[
           "Select",
           "Client Id",
-          "Filename",
           "Document No",
           "Village",
           "Gat No",
@@ -190,7 +188,7 @@ let Uploads = ({
         <TableBody
           filteredData={filteredData}
           isAdmin={role === "Admin"}
-          //   deleteClient={deleteClient}
+          // deleteClient={deleteClient}
         />
       </table>
     </div>

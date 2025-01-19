@@ -11,6 +11,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { Mail } from "./mail.controller.js";
 import { getOtp } from "../helper/otpGenerator.js";
+import Info from "../models/info.model.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -420,7 +421,9 @@ export let deleteExpiredEvents = async (req, res) => {
 export let bulkDelete = async (req, res) => {
   try {
     const { ids } = req.body;
-    const clientDocs = await Files.find({ userId: { $in: ids } });
+    const clientDocs = await Info.find({ _id: { $in: ids } });
+
+    console.log(clientDocs);
 
     if (clientDocs.length > 0) {
       for (const doc of clientDocs) {
@@ -432,10 +435,10 @@ export let bulkDelete = async (req, res) => {
         }
       }
 
-      await Files.deleteMany({ userId: { $in: ids } });
+      await Info.deleteMany({ _id: { $in: ids } });
     }
 
-    const result = await Client.deleteMany({ _id: { $in: ids } });
+    const result = await Client.deleteMany({ clientId: { $in: ids } });
 
     if (result.deletedCount > 0) {
       res.status(200).send({ message: "Records deleted successfully." });

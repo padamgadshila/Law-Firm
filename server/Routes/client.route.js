@@ -7,9 +7,12 @@ import {
   getClientById,
   getClients,
   getClientsDocs,
+  getLastId,
   getUploads,
+  getUploadsById,
   updateClient,
   updateClientDocument,
+  uploadUpdate,
 } from "../controller/client.controller.js";
 import { authorize } from "../Auth/auth.js";
 import { uploadFields } from "../helper/multerConfiguration.js";
@@ -73,4 +76,19 @@ clientRouter.put(
 
 // get uploaded
 clientRouter.get("/getUploaded", authorize(["Admin", "Employee"]), getUploads);
+
+// get id
+clientRouter.get("/getId", authorize(["Admin", "Employee"]), getLastId);
+
+clientRouter.get(
+  "/getUploadsById",
+  authorize(["Admin", "Employee"]),
+  getUploadsById
+);
+
+clientRouter.put(
+  "/uploadUpdate",
+  authorize(["Admin", "Employee"]),
+  uploadUpdate
+);
 export default clientRouter;

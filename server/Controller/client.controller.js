@@ -4,11 +4,13 @@ import { getId } from "../helper/getObjectId.js";
 import path from "path";
 import fs from "fs";
 import Info from "../models/info.model.js";
+import Counter from "../models/counter.model.js";
 
 // add clients
 export let addClient = async (req, res) => {
   try {
     const {
+      clientId,
       fname,
       mname,
       lname,
@@ -16,8 +18,6 @@ export let addClient = async (req, res) => {
       mobile,
       caseType,
       dob,
-      docType,
-      gender,
       state,
       city,
       village,
@@ -26,16 +26,14 @@ export let addClient = async (req, res) => {
 
     const client = await Client.create({
       fname,
+      clientId,
       mname,
       lname,
       email,
       mobile,
       caseType,
       dob,
-      docType,
-      gender,
       address: { state, city, village, pincode },
-      fileUploaded: "No",
       hide: false,
     });
 
@@ -50,7 +48,8 @@ export let addClient = async (req, res) => {
 // add clients documents
 export let addClientDocument = async (req, res) => {
   try {
-    const { clientId, documentNo, village, gatNo, year, extraInfo } = req.body;
+    const { clientId, docType, documentNo, village, gatNo, year, extraInfo } =
+      req.body;
 
     console.log(req.body);
 
@@ -60,7 +59,7 @@ export let addClientDocument = async (req, res) => {
     //   { _id: id },
     //   { fileUploaded: "Yes" }
     // );
-    const check = await Info.findOne({ clientId: clientId });
+    const check = await Info.findOne({ _id: clientId });
     if (check) {
       return res.status(409).json({ error: "Documents already uploaded..!" });
     }
@@ -73,22 +72,29 @@ export let addClientDocument = async (req, res) => {
         const documentType = req.body[documentTypeKey];
         const documentFile = req.files[documentFileKey][0];
 
+        const userDefinedName = req.body.filename || `file-${i}`;
+        const newFilename = `${userDefinedName}-${Date.now()}${path.extname(
+          documentFile.originalname
+        )}`;
+        const newPath = path.join("uploads", newFilename);
+        fs.renameSync(documentFile.path, newPath);
+
         const fileData = {
           documentType: documentType,
-          filename: documentFile.filename,
-          filePath: "uploads/" + documentFile.filename,
+          filename: newFilename,
+          filePath: newPath,
         };
         docs.push(fileData);
       }
     }
     const data = await Info.create({
-      clientId: clientId,
       documentNo: documentNo,
       village: village,
       gatNo: gatNo,
       year: year,
       extraInfo: extraInfo,
       document: docs,
+      docType: docType,
     });
 
     return res
@@ -106,8 +112,8 @@ export let deleteClient = async (req, res) => {
   try {
     const cid = req.query.id;
     const id = getId(cid);
-
-    const clientDocs = await Files.find({ userId: id });
+    const clientId = await Client.findOne({ _id: id });
+    const clientDocs = await Info.find({ _id: clientId.clientId });
 
     if (clientDocs) {
       for (const doc of clientDocs) {
@@ -116,7 +122,7 @@ export let deleteClient = async (req, res) => {
           fs.unlinkSync(fullPath);
         }
       }
-      const delDocuments = await Files.deleteMany({ userId: id });
+      const delDocuments = await Info.deleteMany({ _id: clientId.clientId });
     }
 
     const delClient = await Client.deleteOne({ _id: id });
@@ -342,6 +348,54 @@ export let getUploads = async (req, res) => {
     const data = await Info.find();
 
     return res.status(200).json({ data });
+  } catch (error) {
+    return res.status(500).json({ error: "Server Error" });
+  }
+};
+
+// get id
+export let getLastId = async (req, res) => {
+  try {
+    const counter = await Counter.findByIdAndUpdate(
+      { _id: "info" },
+      { $setOnInsert: { count: 0 } }, // Initialize only if not present
+      { new: true, upsert: true } // Return the updated document or create it
+    );
+    console.log(counter);
+
+    return res.status(200).json({ counter });
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ error: "Server Error" });
+  }
+};
+
+export let getUploadsById = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const result = await Info.findOne({ _id: id });
+    return res.status(200).json({ result });
+  } catch (error) {
+    return res.status(500).json({ error: "Server Error" });
+  }
+};
+
+export let uploadUpdate = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const { documentNo, village, gateNo, extraInfo, year, docType } = req.body;
+    console.log(documentNo, village, gateNo, extraInfo, year, docType);
+    console.log(req.body);
+
+    const result = await Info.findByIdAndUpdate(id, {
+      documentNo,
+      village,
+      gateNo,
+      extraInfo,
+      year,
+      docType,
+    });
+    return res.status(200).json({ message: "Record update..!" });
   } catch (error) {
     return res.status(500).json({ error: "Server Error" });
   }

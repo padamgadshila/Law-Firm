@@ -9,19 +9,20 @@ import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 import { useActiveTab } from "../store/store";
 
-let AddClientDocuments = () => {
+let EditUploads = () => {
+  const location = useLocation();
+  const id = location.search.split("=")[1];
   const token = getToken();
   const navigate = useNavigate();
-  const { post, get } = useAxios();
+  const { put, get } = useAxios();
   const setActiveTab = useActiveTab((state) => state.setActiveTab);
-  let [id, setId] = useState(0);
-  const [documents, setDocuments] = useState([
-    {
-      documentType: "",
-      document: "",
-      filename: "Select the file",
-    },
-  ]);
+  //   const [documents, setDocuments] = useState([
+  //     {
+  //       documentType: "",
+  //       document: "",
+  //       filename: "Select the file",
+  //     },
+  //   ]);
 
   const formik = useFormik({
     initialValues: {
@@ -40,10 +41,10 @@ let AddClientDocuments = () => {
       try {
         let formData = new FormData();
 
-        documents.forEach((doc, i) => {
-          formData.append(`documentType-${i}`, doc.documentType);
-          formData.append(`document-${i}`, doc.document);
-        });
+        // documents.forEach((doc, i) => {
+        //   formData.append(`documentType-${i}`, doc.documentType);
+        //   formData.append(`document-${i}`, doc.document);
+        // });
 
         formData.append("extraInfo", values.extraInfo);
         formData.append("documentNo", values.documentNo);
@@ -53,8 +54,8 @@ let AddClientDocuments = () => {
         formData.append("year", values.year);
         formData.append("filename", values.filename);
         formData.append("docType", values.docType);
-        const { data, status } = await post(
-          "/api/addClientDocument",
+        const { data, status } = await put(
+          `/api/uploadUpdate?id=${id}`,
           formData,
           token
         );
@@ -76,11 +77,22 @@ let AddClientDocuments = () => {
   });
 
   useEffect(() => {
-    const getLastId = async () => {
+    const getUploadsById = async () => {
       try {
-        const { data, status } = await get("/api/getId", token);
+        const { data, status } = await get(
+          `/api/getUploadsById?id=${id}`,
+          token
+        );
         if (status === 200) {
-          setId(parseInt(data?.counter?.count) + 1);
+          //   setId(parseInt(data?.counter?.count) + 1);
+          formik.setValues({
+            clientId: data.result?._id,
+            year: data.result?.year,
+            documentNo: data.result?.documentNo,
+            village: data.result?.village,
+            gatNo: data.result?.gatNo,
+            docType: data.result?.docType,
+          });
           console.log(data);
         }
       } catch (error) {
@@ -91,12 +103,12 @@ let AddClientDocuments = () => {
         }
       }
     };
-    getLastId();
-  }, [get, token]);
+    getUploadsById();
+  }, []);
 
-  useEffect(() => {
-    formik.setFieldValue("clientId", id);
-  }, [id]);
+  //   useEffect(() => {
+  //     formik.setFieldValue("clientId", id);
+  //   }, [id]);
   const currentYear = 2025;
   const startYear = 1940;
   const years = [];
@@ -105,28 +117,6 @@ let AddClientDocuments = () => {
   for (let year = currentYear; year >= startYear; year--) {
     years.push(year);
   }
-  const addDocuments = () => {
-    setDocuments([
-      ...documents,
-      {
-        documentType: "",
-        document: "",
-        filename: "Select the file",
-      },
-    ]);
-  };
-  const handleDocumentChange = (index, field, value) => {
-    const updatedDocuments = [...documents];
-    updatedDocuments[index][field] = value;
-    setDocuments(updatedDocuments);
-  };
-
-  const handleFileSelection = (index, file) => {
-    const updatedDocuments = [...documents];
-    updatedDocuments[index].document = file || null;
-    updatedDocuments[index].filename = file.name || null;
-    setDocuments(updatedDocuments);
-  };
 
   const docTypes = [
     "Client Photo",
@@ -139,13 +129,6 @@ let AddClientDocuments = () => {
     "Domicile Certificate",
     "Others",
   ];
-
-  const getAvailableDocTypes = (currentIndex) => {
-    const selectedTypes = documents
-      .map((doc, i) => (i !== currentIndex ? doc.documentType : null))
-      .filter(Boolean);
-    return docTypes.filter((type) => !selectedTypes.includes(type));
-  };
 
   return (
     <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
@@ -161,14 +144,7 @@ let AddClientDocuments = () => {
               {...formik.getFieldProps("clientId")}
             />
           </div>
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Filename</label>
-            <input
-              className={styles.input}
-              placeholder="Filename"
-              {...formik.getFieldProps("filename")}
-            />
-          </div>
+
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Village name</label>
             <input
@@ -226,64 +202,6 @@ let AddClientDocuments = () => {
             </select>
           </div>
         </div>
-        {documents.map((doc, i) => (
-          <div className="w-full flex gap-2" key={i}>
-            <div className="w-full flex flex-col my-2">
-              <label className="text-xl ml-1">Upload Type</label>
-              <select
-                className={styles.input}
-                value={doc.documentType}
-                onChange={(e) =>
-                  handleDocumentChange(i, "documentType", e.target.value)
-                }
-              >
-                <option>Select document</option>
-                {getAvailableDocTypes(i).map((type, i) => (
-                  <option value={type} key={i}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="w-full flex flex-col my-2">
-              <label className="text-[18px] ml-1">
-                {doc.documentType} (JPG, PNG, PDF)
-              </label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                id={`file-${i}`}
-                style={{ display: "none" }}
-                placeholder="Client Id"
-                onChange={(e) => handleFileSelection(i, e.target.files[0])}
-              />
-              <label
-                htmlFor={`file-${i}`}
-                className={styles.input}
-                style={{
-                  border: "1px dashed",
-                  lineHeight: "55px",
-                  cursor: "pointer",
-                  textWrap: "nowrap",
-                  overflow: "hidden",
-                  width: "300px",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {doc.filename}
-              </label>
-            </div>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          onClick={addDocuments}
-          className="text-xl text-blue-500"
-        >
-          Add More
-        </button>
 
         <div className="w-full flex flex-col my-2">
           <label className="text-xl ml-1">Extra info (Optional)</label>
@@ -301,4 +219,4 @@ let AddClientDocuments = () => {
     </div>
   );
 };
-export default AddClientDocuments;
+export default EditUploads;

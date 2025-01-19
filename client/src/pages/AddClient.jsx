@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
 import { Toaster, toast } from "react-hot-toast";
@@ -11,13 +11,12 @@ let AddClient = () => {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      clientId: "",
       fname: "",
       mname: "",
       lname: "",
       email: "",
       mobile: "",
-      gender: "",
-      docType: "",
       caseType: "",
       dob: "",
       state: "",
@@ -31,8 +30,12 @@ let AddClient = () => {
       try {
         let { data, status } = await post("/api/addClient", values, token);
         if (status === 200) {
-          toast.success("Client Info saved..!");
-          navigate(`/addClientDocuments?id=${data._id}`);
+          toast.success(data.message);
+          if (localStorage.getItem("role") === "Admin") {
+            navigate("/admin");
+          } else {
+            navigate("/employee");
+          }
         }
       } catch (error) {
         toast.error("Something went wrong");
@@ -48,6 +51,17 @@ let AddClient = () => {
         onSubmit={formik.handleSubmit}
       >
         <h1 className="text-4xl font-bold text-center">Client Information</h1>
+        <div className="w-full flex gap-2">
+          <div className="w-full flex flex-col my-2">
+            <label className="text-xl ml-1">Client Id</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Client Id"
+              {...formik.getFieldProps("clientId")}
+            />
+          </div>
+        </div>
         <div className="w-full flex gap-2">
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">First name</label>
@@ -88,32 +102,20 @@ let AddClient = () => {
             />
           </div>
 
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Gender</label>
-            <select
-              className={styles.input}
-              {...formik.getFieldProps("gender")}
-            >
-              <option value="" disabled={true}>
-                Select Gender
-              </option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Others">Others</option>
-            </select>
+          <div className="w-full flex gap-2">
+            <div className="w-full flex flex-col my-2">
+              <label className="text-xl ml-1">Mobile</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Mobile No."
+                {...formik.getFieldProps("mobile")}
+              />
+            </div>
           </div>
         </div>
 
         <div className="w-full flex gap-2">
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Mobile</label>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="Mobile No."
-              {...formik.getFieldProps("mobile")}
-            />
-          </div>
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Dob</label>
             <input
@@ -123,8 +125,6 @@ let AddClient = () => {
               {...formik.getFieldProps("dob")}
             />
           </div>
-        </div>
-        <div className="w-full flex gap-2">
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Case Type</label>
             <select
@@ -140,21 +140,6 @@ let AddClient = () => {
               <option value="Family">Family</option>
               <option value="Civil">Civil</option>
               <option value="Others">Others</option>
-            </select>
-          </div>
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Document Type</label>
-            <select
-              id="type"
-              {...formik.getFieldProps("docType")}
-              className={styles.input}
-            >
-              <option value="" disabled={true}>
-                Select Type
-              </option>
-              <option value="Notary">Notary</option>
-              <option value="Subreg">Subreg</option>
-              <option value="Only Type">Only Type</option>
             </select>
           </div>
         </div>

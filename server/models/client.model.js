@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const clientSchema = new mongoose.Schema(
   {
+    clientId: { type: String },
     fname: { type: String },
     mname: { type: String },
     lname: { type: String },
     email: { type: String },
     mobile: { type: String },
     caseType: { type: String },
-    docType: { type: String },
     address: {
       state: { type: String },
       city: { type: String },

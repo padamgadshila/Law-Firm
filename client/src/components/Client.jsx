@@ -28,7 +28,7 @@ let Client = ({
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedRecords(filteredData.map((data) => data._id));
+      setSelectedRecords(filteredData.map((data) => data.clientId));
     } else {
       setSelectedRecords([]);
     }
@@ -223,46 +223,25 @@ let Client = ({
           <input
             type="checkbox"
             className="w-5 h-5"
-            checked={selectedRecords.includes(data._id)}
+            checked={selectedRecords.includes(data.clientId)}
             onChange={() => {
-              handleCheckboxChange(data._id);
+              handleCheckboxChange(data.clientId);
             }}
           />
         </td>
-        <td className="px-4 py-2 border">{data._id || "-"}</td>
-        <td className="px-4 py-2 border">{data.docNo || "-"}</td>
-        <td className="px-4 py-2 border">{data.docType || "-"}</td>
-        <td className="px-4 py-2 border">{data.fname || "-"}</td>
-        <td className="px-4 py-2 border">{data.mname || "-"}</td>
-        <td className="px-4 py-2 border">{data.lname || "-"}</td>
-        <td className="px-4 py-2 border">{data.email || "-"}</td>
+        <td className="px-4 py-2 border">{data.clientId || "-"}</td>
+        <td className="px-4 py-2 border">
+          {data.fname} {data.mname} {data.lname}
+        </td>
         <td className="px-4 py-2 border">{data.mobile || "-"}</td>
+
+        <td className="px-4 py-2 border">{data.email || "-"}</td>
         <td className="px-4 py-2 border">{data.caseType || "-"}</td>
-        <td className="px-4 py-2 border">{data.dob || "-"}</td>
-        <td className="px-4 py-2 border">{data.address?.city || "-"}</td>
-        <td className="px-4 py-2 border">{data.address?.village || "-"}</td>
-        <td className="px-4 py-2 border">{data.address?.pincode || "-"}</td>
+        <td className="px-4 py-2 border">
+          {data.address?.state} {data.address?.city} {data.address?.village}{" "}
+          {data.address?.pincode}{" "}
+        </td>
         <td className="px-4 py-2 border">{data.status || "-"}</td>
-        {/* <td className="px-4 py-2 border text-center text-blue-500 cursor-pointer hover:underline">
-          {data.fileUploaded === "Yes" ? (
-            <button
-              className="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-700"
-              onClick={() => {
-                getDocuments(data._id);
-                showTable(true);
-              }}
-            >
-              View
-            </button>
-          ) : (
-            <Link
-              className="block px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
-              to={`/addClientDocuments?id=${data._id}`}
-            >
-              Add
-            </Link>
-          )}
-        </td> */}
         <td className="px-4 py-2 border text-center cursor-pointer">
           <Link
             to={`/edit?id=${data._id}`}
@@ -315,18 +294,11 @@ let Client = ({
         {[
           "Select",
           "Client Id",
-          "Document No",
-          "Document Type",
-          "First Name",
-          "Middle Name",
-          "Last Name",
+          "Name",
+          "Mobile No",
           "Email",
-          "Mobile",
           "Case Type",
-          "Dob",
-          "City",
-          "Village",
-          "Pincode",
+          "Address",
           "Status",
           // "Documents",
         ].map((header, index) => (
