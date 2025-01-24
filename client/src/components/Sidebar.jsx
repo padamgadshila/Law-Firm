@@ -35,9 +35,9 @@ let Sidebar = ({
       option: [],
     },
     {
-      name: "Client",
+      name: "Client Info",
       icon: faUser,
-      option: [{ name: "Add client", link: "/addClient" }],
+      option: [{ name: "Add Client Info", link: "/addClient" }],
     },
     {
       name: "Add Event",

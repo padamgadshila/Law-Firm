@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import toast, { Toaster } from "react-hot-toast";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 import { useActiveTab } from "../store/store";
@@ -16,13 +15,6 @@ let EditUploads = () => {
   const navigate = useNavigate();
   const { put, get } = useAxios();
   const setActiveTab = useActiveTab((state) => state.setActiveTab);
-  //   const [documents, setDocuments] = useState([
-  //     {
-  //       documentType: "",
-  //       document: "",
-  //       filename: "Select the file",
-  //     },
-  //   ]);
 
   const formik = useFormik({
     initialValues: {
@@ -39,24 +31,9 @@ let EditUploads = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        let formData = new FormData();
-
-        // documents.forEach((doc, i) => {
-        //   formData.append(`documentType-${i}`, doc.documentType);
-        //   formData.append(`document-${i}`, doc.document);
-        // });
-
-        formData.append("extraInfo", values.extraInfo);
-        formData.append("documentNo", values.documentNo);
-        formData.append("village", values.village);
-        formData.append("gatNo", values.gatNo);
-        formData.append("clientId", values.clientId);
-        formData.append("year", values.year);
-        formData.append("filename", values.filename);
-        formData.append("docType", values.docType);
         const { data, status } = await put(
           `/api/uploadUpdate?id=${id}`,
-          formData,
+          values,
           token
         );
         if (status === 200) {
@@ -71,7 +48,11 @@ let EditUploads = () => {
           }
         }
       } catch (error) {
-        toast.error(error.response.data.error);
+        if (error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error(error);
+        }
       }
     },
   });
@@ -84,7 +65,6 @@ let EditUploads = () => {
           token
         );
         if (status === 200) {
-          //   setId(parseInt(data?.counter?.count) + 1);
           formik.setValues({
             clientId: data.result?._id,
             year: data.result?.year,
@@ -106,9 +86,6 @@ let EditUploads = () => {
     getUploadsById();
   }, []);
 
-  //   useEffect(() => {
-  //     formik.setFieldValue("clientId", id);
-  //   }, [id]);
   const currentYear = 2025;
   const startYear = 1940;
   const years = [];
@@ -118,22 +95,10 @@ let EditUploads = () => {
     years.push(year);
   }
 
-  const docTypes = [
-    "Client Photo",
-    "Client Signature",
-    "Aadhar Card",
-    "Pan Card",
-    "Voter Card",
-    "Driving License",
-    "Ration Card",
-    "Domicile Certificate",
-    "Others",
-  ];
-
   return (
     <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
       <form className="w-[700px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
-        <h1 className="text-4xl font-bold text-center">Uploads</h1>
+        <h1 className="text-4xl font-bold text-center">Update Information</h1>
         <div className="flex gap-2">
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Client Id</label>
@@ -213,7 +178,7 @@ let EditUploads = () => {
           ></textarea>
         </div>
         <button className={styles.button} type="submit">
-          Upload
+          Update
         </button>
       </form>
     </div>

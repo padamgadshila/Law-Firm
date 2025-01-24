@@ -400,3 +400,26 @@ export let uploadUpdate = async (req, res) => {
     return res.status(500).json({ error: "Server Error" });
   }
 };
+
+export let removeC = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const infos = await Info.find({ _id: id });
+    const deleteClient = await Client.deleteOne({ clientId: id });
+
+    if (infos) {
+      for (const doc of infos) {
+        for (const file of doc.document) {
+          const fullPath = path.join("uploads", file.filename);
+          fs.unlinkSync(fullPath);
+        }
+      }
+      const deleteInfo = await Info.deleteMany({ _id: id });
+    }
+    return res.status(200).json({ message: "Deleted..!" });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ error: "Server Error" });
+  }
+};

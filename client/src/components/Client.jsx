@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
@@ -56,45 +56,8 @@ let Client = ({
     setOperation(selectedRecords.length > 0);
   }, [selectedRecords, setOperation]);
 
-  // useEffect(() => {
-  //   if (query.filter && query.search) {
-  //     const filtered = originalClientData.filter((item) =>
-  //       item[query.filter]?.toLowerCase().includes(query.search.toLowerCase())
-  //     );
-  //     setClientData(filtered);
-  //   } else {
-  //     setClientData(originalClientData);
-  //   }
-  // }, [query]);
-
-  // const clientDocs = useClientDocumentsStore((state) => state.clientDocs);
-  // const setClientDocs = useClientDocumentsStore((state) => state.setClientDocs);
-
-  // const getDocuments = async (_id) => {
-  //   try {
-  //     const { data, status } = await getClientDocuments(_id);
-  //     if (status === 201) {
-  //       setClientDocs({
-  //         userId: data.docs?.userId || null,
-  //         document: data.docs?.document || [],
-  //         info: data.docs?.info || null,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.response?.data?.error || "Error fetching documents.");
-  //   }
-  // };
-
-  const isImage = (filename) => {
-    const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
-    const ext = filename.split(".").pop().toLowerCase();
-    return imageExtensions.includes(ext);
-  };
-
   const printDocument = async (e) => {
     try {
-      const { data, status } = await get(`/api/clientDocs?id=${e._id}`, token);
-
       const printableContent = `
   <!DOCTYPE html>
   <html lang="en">
@@ -115,13 +78,12 @@ let Client = ({
   </head>
   <body>
     <div class="container">
-    <span class="doc1"><b>Document no:</b>${e.docNo}</span>
       <h1 class="heading">Client Information</h1>
       <br />
       <h2 class="subheading">Personal Information</h2>
       <div class="info-row">
         <span class="info-item">
-          <b>Client ID: </b> ${e._id}
+          <b>Client ID: </b> ${e.clientId}
         </span>    
         <span class="info-item">
           <b>Full name: </b> ${e.fname} ${e.mname} ${e.lname}
@@ -135,64 +97,21 @@ let Client = ({
           <b>Email: </b> ${e.email}
         </span>
       </div>
-      <div class="info-row">
-             <span class="info-item">
-          <b>Dob: </b> ${e.dob}
-        </span>
-        <span class="info-item">
-          <b>Gender: </b>${e.gender}
-        </span>      
 
-      </div>
       <div class="info-row">
         <span class="info-item">
           <b>Case Type: </b> ${e.caseType}
-        </span>
-        <span class="info-item">
-          <b>Document type: </b> ${e.docType}
-        </span>
-
-                
+        </span>          
       </div> 
       <div class="info-row">
       <span class="info-item">
-          <b>Address: </b>${e.address?.state}, ${e.address?.city}, ${
-        e.address?.village
-      }, ${e.address?.pincode}
+          <b>Address: </b>${e.address?.state}, ${e.address?.city}, ${e.address?.village}, ${e.address?.pincode}
         </span>
       </div>
-      <h2 class="subheading">Documents Information</h2>
-      <div class="documents-section">
-  <ul>
-    ${
-      data.docs?.document.length > 0
-        ? data.docs?.document
-            .map(
-              (doc, i) => `
-            <li class="di" key="${i}">
-            ${
-              isImage(doc.filename)
-                ? `
-              <h3>${doc.documentType}</h3>
-                <img src="http://localhost:3500/${doc.filename}" style="width:50%" alt="${doc.documentType}" />
-              `
-                : ""
-            }
-            </li>
-          `
-            )
-            .join("")
-        : `<li>No files available</li>`
-    }
-  </ul>
-  
       </div>
     </div>
   </body>
-  </html>
-  
-    `;
-
+  </html>`;
       const printWindow = window.open("", "_blank");
       const print = localStorage.getItem("print");
       if (print === "print") {
@@ -262,7 +181,7 @@ let Client = ({
             </td>
           </>
         )}
-        <td className="px-4 py-2 border text-center cursor-pointer ">
+        <td className="px-4 py-2 border text-center cursor-pointer">
           <button
             onClick={() => {
               localStorage.setItem("print", "print");
@@ -300,7 +219,6 @@ let Client = ({
           "Case Type",
           "Address",
           "Status",
-          // "Documents",
         ].map((header, index) => (
           <th
             key={index}
@@ -342,6 +260,7 @@ let Client = ({
       </tr>
     </thead>
   );
+
   const TableBody = ({ filteredData }) => {
     return (
       <tbody>
@@ -363,8 +282,6 @@ let Client = ({
       const { data, status } = await get("/api/getClients", token);
       if (status === 200) {
         setClientData(data.clientData);
-        // setOriginalClientData(data.clientData);
-        // setFilteredData(data.clientData);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Error fetching data.");

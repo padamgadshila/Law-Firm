@@ -10,6 +10,7 @@ import {
   getLastId,
   getUploads,
   getUploadsById,
+  removeC,
   updateClient,
   updateClientDocument,
   uploadUpdate,
@@ -91,4 +92,5 @@ clientRouter.put(
   authorize(["Admin", "Employee"]),
   uploadUpdate
 );
+clientRouter.delete("/removeC", authorize(["Admin", "Employee"]), removeC);
 export default clientRouter;

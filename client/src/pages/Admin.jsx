@@ -203,6 +203,7 @@ let Admin = () => {
               selectedRecords={selectedRecords}
               showSearch={showSearch}
               setShowSearch={setShowSearch}
+              setOperation={setOperation}
             />
           )}
           {activeTab === 3 && (
