@@ -9,6 +9,8 @@ import {
   useEvent,
   useFilter,
   useFilteredData,
+  useGlobal,
+  useGlobalFilter,
   useInput,
   useOperation,
   useProfile,
@@ -29,6 +31,7 @@ import Editor from "../components/Editor";
 import AddEvent from "../components/AddEvent";
 import AddClientDocuments from "./AddClientDocuments";
 import Uploads from "../components/Uploads";
+import UniversalSearch from "../components/UniversalSearch";
 
 let Admin = () => {
   // import all the states
@@ -86,6 +89,12 @@ let Admin = () => {
 
   let showSearch = useShowSearchResults((state) => state.showSearch);
   let setShowSearch = useShowSearchResults((state) => state.setShowSearch);
+
+  const globalData = useGlobal((state) => state.globalData);
+  const setGlobalData = useGlobal((state) => state.setGlobalData);
+
+  const globalFData = useGlobalFilter((state) => state.globalFData);
+  const setGlobalFData = useGlobalFilter((state) => state.setGlobalFData);
   // set all the data
 
   // TABS DATA
@@ -172,6 +181,10 @@ let Admin = () => {
         clientData={clientData}
         setClientData={setClientData}
         setShowSearch={setShowSearch}
+        globalData={globalData}
+        setGlobalData={setGlobalData}
+        globalFData={globalFData}
+        setGlobalFData={setGlobalFData}
       />
       {/* Main Page */}
       <div className="flex">
@@ -251,11 +264,23 @@ let Admin = () => {
 
       {/* universal search page */}
       <div
-        className={`w-full h-[calc(100%-80px)] border absolute top-[80px] left-0 bg-white p-5 ${
+        className={`w-full h-[calc(100%-80px)] border absolute top-[80px] left-0 bg-white ${
           showSearch ? "block" : "hidden"
         }`}
       >
-        <h1 className="text-4xl">Universal Search Results</h1>
+        <UniversalSearch
+          uploadedData={uploadedData}
+          setUploadedData={setUploadedData}
+          removeUploadedData={removeUploadedData}
+          setSelectedRecords={setSelectedRecords}
+          selectedRecords={selectedRecords}
+          showSearch={showSearch}
+          setShowSearch={setShowSearch}
+          setOperation={setOperation}
+          globalData={globalData}
+          setGlobalData={setGlobalData}
+          globalFData={globalFData}
+        />
       </div>
     </div>
   );

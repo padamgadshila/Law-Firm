@@ -39,6 +39,23 @@ export let useUploads = create((set) => ({
     })),
 }));
 
+export let useGlobal = create((set) => ({
+  globalData: [],
+  setGlobalData: (data) => set({ globalData: data }),
+  removeGlobalData: (id) =>
+    set((state) => ({
+      globalData: state.globalData.filter((upload) => upload._id !== id),
+    })),
+}));
+export let useGlobalFilter = create((set) => ({
+  globalFData: [],
+  setGlobalFData: (data) => set({ globalFData: data }),
+  removeGlobalFData: (id) =>
+    set((state) => ({
+      globalFData: state.globalFData.filter((upload) => upload._id !== id),
+    })),
+}));
+
 export let useEvent = create((set) => ({
   events: [],
   setEvents: (data) => set({ events: data }),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -34,6 +34,9 @@ let Navigation = ({
   clientData,
   setClientData,
   setShowSearch,
+  globalData,
+  globalFData,
+  setGlobalFData,
 }) => {
   const { post, get } = useAxios();
   const token = getToken();
@@ -130,6 +133,32 @@ let Navigation = ({
   let handleSearch = (e) => {
     let value = e.target.value.toLowerCase();
     setSearch(value);
+    let filtered = globalData.filter((client) => {
+      return (
+        (client.infoRecords?.[0]?._id?.toLowerCase() || "").includes(value) ||
+        (client.infoRecords?.[0]?.documentNo?.toLowerCase() || "").includes(
+          value
+        ) ||
+        (client.fname?.toLowerCase() || "").includes(value) ||
+        (client.mname?.toLowerCase() || "").includes(value) ||
+        (client.lname?.toLowerCase() || "").includes(value) ||
+        (client.email?.toLowerCase() || "").includes(value) ||
+        (client.mobile?.toLowerCase() || "").includes(value) ||
+        (client.caseType?.toLowerCase() || "").includes(value) ||
+        (client.infoRecords?.[0]?.gatNo?.toLowerCase() || "").includes(value) ||
+        (client.infoRecords?.[0]?.year?.toLowerCase() || "").includes(value) ||
+        (client.infoRecords?.[0]?.docType?.toLowerCase() || "").includes(
+          value
+        ) ||
+        (client.dob?.toLowerCase() || "").includes(value) ||
+        (client.address?.state?.toLowerCase() || "").includes(value) ||
+        (client.address?.city?.toLowerCase() || "").includes(value) ||
+        (client.address?.village?.toLowerCase() || "").includes(value) ||
+        (client.address?.pincode?.toLowerCase() || "").includes(value) ||
+        (client.status?.toLowerCase() || "").includes(value)
+      );
+    });
+    setGlobalFData(filtered);
 
     if (value !== "") {
       setShowSearch(true);

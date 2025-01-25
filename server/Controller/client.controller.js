@@ -423,3 +423,23 @@ export let removeC = async (req, res) => {
     return res.status(500).json({ error: "Server Error" });
   }
 };
+
+export let getCombinedData = async (req, res) => {
+  try {
+    const result = await Client.aggregate([
+      {
+        $lookup: {
+          from: "infos",
+          localField: "clientId",
+          foreignField: "_id",
+          as: "infoRecords",
+        },
+      },
+    ]);
+
+    return res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server Error" });
+  }
+};

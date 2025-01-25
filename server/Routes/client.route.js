@@ -7,6 +7,7 @@ import {
   getClientById,
   getClients,
   getClientsDocs,
+  getCombinedData,
   getLastId,
   getUploads,
   getUploadsById,
@@ -93,4 +94,9 @@ clientRouter.put(
   uploadUpdate
 );
 clientRouter.delete("/removeC", authorize(["Admin", "Employee"]), removeC);
+clientRouter.get(
+  "/getCombinedData",
+  authorize(["Admin", "Employee"]),
+  getCombinedData
+);
 export default clientRouter;
