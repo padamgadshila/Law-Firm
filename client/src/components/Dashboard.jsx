@@ -92,7 +92,7 @@ let Dashboard = ({ toast, setEvents, events }) => {
         ))}
       </div>
 
-      <section className="section-container p-6 rounded-lg shadow-md w-[500px] mt-5 bg-white border">
+      <section className="section-container p-6 rounded-lg shadow-md w-full mt-5 bg-white border">
         <h2 className="text-xl font-bold mb-4 text-gray-700">
           Upcoming Events
         </h2>
