@@ -3,6 +3,13 @@ import { getToken } from "../helper/getCookie";
 import { useAxios } from "../hook/fetch.hook";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faPenToSquare,
+  faPrint,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 let Uploads = ({
   uploadedData,
   setUploadedData,
@@ -93,7 +100,7 @@ let Uploads = ({
             }}
             className="px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
           >
-            Preview
+            <FontAwesomeIcon icon={faEye} />
           </button>
         </td>
         <td className="px-4 py-2 border text-center cursor-pointer">
@@ -101,7 +108,7 @@ let Uploads = ({
             to={`/editUploads?id=${data._id}`}
             className="block px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-700"
           >
-            Edit
+            <FontAwesomeIcon icon={faPenToSquare} />
           </Link>
         </td>
 
@@ -113,7 +120,7 @@ let Uploads = ({
             }}
             className="px-4 py-2 rounded-md bg-yellow-500 text-white hover:bg-yellow-700"
           >
-            Print
+            <FontAwesomeIcon icon={faPrint} />
           </button>
         </td>
         {role === "Admin" && (
@@ -123,7 +130,7 @@ let Uploads = ({
                 className="px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-700"
                 onClick={() => deleteClient(data._id)}
               >
-                Delete
+                <FontAwesomeIcon icon={faTrashCan} />
               </button>
             </td>
           </>
