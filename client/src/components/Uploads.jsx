@@ -85,13 +85,36 @@ let Uploads = ({
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
         <td className="px-4 py-2 border">{data.year || "-"}</td>
         <td className="px-4 py-2 border">{data.extraInfo || "-"}</td>
+        <td className="px-4 py-2 border text-center cursor-pointer ">
+          <button
+            onClick={() => {
+              localStorage.setItem("print", "view");
+              printDocument(data);
+            }}
+            className="px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
+          >
+            Preview
+          </button>
+        </td>
         <td className="px-4 py-2 border text-center cursor-pointer">
           <Link
             to={`/editUploads?id=${data._id}`}
-            className="block px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
+            className="block px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-700"
           >
             Edit
           </Link>
+        </td>
+
+        <td className="px-4 py-2 border text-center cursor-pointer ">
+          <button
+            onClick={() => {
+              localStorage.setItem("print", "print");
+              printDocument(data);
+            }}
+            className="px-4 py-2 rounded-md bg-yellow-500 text-white hover:bg-yellow-700"
+          >
+            Print
+          </button>
         </td>
         {role === "Admin" && (
           <>
@@ -105,28 +128,6 @@ let Uploads = ({
             </td>
           </>
         )}
-        <td className="px-4 py-2 border text-center cursor-pointer ">
-          <button
-            onClick={() => {
-              localStorage.setItem("print", "print");
-              printDocument(data);
-            }}
-            className="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-700"
-          >
-            Print
-          </button>
-        </td>
-        <td className="px-4 py-2 border text-center cursor-pointer ">
-          <button
-            onClick={() => {
-              localStorage.setItem("print", "view");
-              printDocument(data);
-            }}
-            className="px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
-          >
-            Preview
-          </button>
-        </td>
       </tr>
     );
   };
