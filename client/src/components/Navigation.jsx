@@ -7,11 +7,13 @@ import {
   faPenToSquare,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import avatar from "../images/profile.png";
 import toast from "react-hot-toast";
 import { useClientStore, useUniversalSearch } from "../store/store";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
+import { Link } from "react-router-dom";
 let Navigation = ({
   showSidebar,
   setShowSidebar,
@@ -175,6 +177,12 @@ let Navigation = ({
         <h1 className="ml-6 font-bold text-2xl">
           {profile.username || "Admin"}
         </h1>
+        <Link
+          className="text-3xl ml-3 cursor-pointer hover:text-green-600"
+          to={`https://wa.me/9156824141?text=Hello%20there!`}
+        >
+          <FontAwesomeIcon icon={faWhatsapp} />
+        </Link>
       </div>
       {/* universal search */}
       {activeTab === 0 && (
