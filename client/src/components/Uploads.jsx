@@ -92,7 +92,7 @@ let Uploads = ({
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
         <td className="px-4 py-2 border">{data.year || "-"}</td>
         <td className="px-4 py-2 border group relative cursor-pointer">
-          <h1 className="text-xl">Files</h1>
+          <h1 className="text-xl">{data.filename || "-"}</h1>
           <div className="absolute w-[450px]  border top-1/2 -translate-y-1/2 transition-all duration-300 left-0 p-3 rounded-md invisible opacity-0 shadow-md group-hover:left-[50px] group-hover:visible group-hover:opacity-100 bg-white">
             <ul>
               {data.document.length > 0 &&
