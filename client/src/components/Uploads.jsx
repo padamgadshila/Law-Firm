@@ -94,21 +94,52 @@ let Uploads = ({
         <td className="px-4 py-2 border group relative cursor-pointer">
           <h1 className="text-xl">{data.filename || "-"}</h1>
           <div className="absolute w-[450px]  border top-1/2 -translate-y-1/2 transition-all duration-300 left-0 p-3 rounded-md invisible opacity-0 shadow-md group-hover:left-[50px] group-hover:visible group-hover:opacity-100 bg-white">
-            <ul>
-              {data.document.length > 0 &&
-                data.document.map((val, i) => (
-                  <li key={i}>
-                    <b>{val.documentType} : </b>
-                    <Link
-                      className="text-blue-500"
-                      to={`http://localhost:3500/${val.filename}`}
-                      target="_blank"
-                    >
-                      {val.filename}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
+            <table className="border-collapse w-full text-left table-auto">
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th>Filename</th>
+                  <th colSpan="2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.document.length > 0 &&
+                  data.document.map((val, i) => (
+                    <tr key={i}>
+                      <td>
+                        <h1>{val.documentType}</h1>
+                      </td>
+                      <td>
+                        <Link
+                          className="text-blue-500"
+                          to={`http://localhost:3500/${val.filename}`}
+                          target="_blank"
+                        >
+                          {val.filename}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link
+                          to={`/editDoc?id=${data._id}`}
+                          className="block rounded-md text-green-500 hover:text-green-700"
+                          title="Update File"
+                        >
+                          <FontAwesomeIcon icon={faPenToSquare} />
+                        </Link>
+                      </td>
+                      <td>
+                        <button
+                          className="rounded-md text-red-500 hover:text-red-700"
+                          title="Delete File"
+                          // onClick={() => deleteClient(data._id)}
+                        >
+                          <FontAwesomeIcon icon={faTrashCan} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </div>
         </td>
         <td className="px-4 py-2 border text-center cursor-pointer ">
@@ -239,7 +270,7 @@ let Uploads = ({
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${e.fname} ${e.mname} ${e.lname}</title>
+    <title>DOC${e.documentNo}</title>
     <style>
       body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f9f9f9;}.container {
         width: 8in;margin: 20px auto;padding: 20px;border: 1px solid #ccc;background-color: #fff;position:relative;}
@@ -256,32 +287,6 @@ let Uploads = ({
 
       <h1 class="heading">Client Information</h1>
       <br />
-     
-      <div class="info-row">
-        <span class="info-item">
-          <b>Client ID: </b> ${e._id}
-        </span>    
-        <span class="info-item">
-          <b>Document no: </b> ${e.documentNo}
-        </span>
-      </div>
-      <div class="info-row">
-          <span class="info-item">
-          <b>Village: </b> ${e.village}
-        </span>
-        <span class="info-item">
-          <b>Gat no: </b> ${e.gatNo}
-        </span>
-      </div>
-
-      <div class="info-row">
-        <span class="info-item">
-          <b>Document type: </b> ${e.docType}
-        </span>  
-      </div> 
-
-      <h2 class="subheading">Documents Information</h2>
-       <div class="documents-section"></div>
   <ul>
     ${
       e?.document.length > 0

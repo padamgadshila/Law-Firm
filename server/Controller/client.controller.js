@@ -392,14 +392,13 @@ export let getUploadsById = async (req, res) => {
 export let uploadUpdate = async (req, res) => {
   try {
     const { id } = req.query;
-    const { documentNo, village, gateNo, extraInfo, year, docType } = req.body;
-    console.log(documentNo, village, gateNo, extraInfo, year, docType);
+    const { documentNo, village, gatNo, extraInfo, year, docType } = req.body;
     console.log(req.body);
 
     const result = await Info.findByIdAndUpdate(id, {
       documentNo,
       village,
-      gateNo,
+      gatNo,
       extraInfo,
       year,
       docType,
