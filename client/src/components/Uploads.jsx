@@ -91,7 +91,26 @@ let Uploads = ({
         <td className="px-4 py-2 border">{data.village || "-"}</td>
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
         <td className="px-4 py-2 border">{data.year || "-"}</td>
-        <td className="px-4 py-2 border">{data.extraInfo || "-"}</td>
+        <td className="px-4 py-2 border group relative cursor-pointer">
+          <h1 className="text-xl">Files</h1>
+          <div className="absolute w-[450px]  border top-1/2 -translate-y-1/2 transition-all duration-300 left-0 p-3 rounded-md invisible opacity-0 shadow-md group-hover:left-[50px] group-hover:visible group-hover:opacity-100 bg-white">
+            <ul>
+              {data.document.length > 0 &&
+                data.document.map((val, i) => (
+                  <li key={i}>
+                    <b>{val.documentType} : </b>
+                    <Link
+                      className="text-blue-500"
+                      to={`http://localhost:3500/${val.filename}`}
+                      target="_blank"
+                    >
+                      {val.filename}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </td>
         <td className="px-4 py-2 border text-center cursor-pointer ">
           <button
             onClick={() => {
@@ -148,7 +167,7 @@ let Uploads = ({
           "Village",
           "Gat No",
           "Year",
-          "Extra",
+          "Files",
         ].map((header, index) => (
           <th
             key={index}

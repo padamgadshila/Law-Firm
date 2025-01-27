@@ -30,7 +30,7 @@ let Profile = ({ toast, Link, profile, setProfile, navigate }) => {
       }
     };
     getProfile(id, role);
-  }, [get, setProfile, toast]);
+  }, []);
 
   let logout = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
