@@ -19,6 +19,7 @@ import UpdateProfile from "./pages/UpdateProfile";
 import ViewDocuments from "./components/ViewDocuments";
 import PreviewClient from "./pages/PreviewClient";
 import EditUploads from "./pages/EditUploads";
+import EditFile from "./pages/EditFile";
 
 const router = createBrowserRouter([
   {
@@ -123,6 +124,14 @@ const router = createBrowserRouter([
     element: (
       <AuthorizeUser>
         <PreviewClient />
+      </AuthorizeUser>
+    ),
+  },
+  {
+    path: "/editFile",
+    element: (
+      <AuthorizeUser>
+        <EditFile />
       </AuthorizeUser>
     ),
   },

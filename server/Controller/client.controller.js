@@ -149,9 +149,8 @@ export let deleteClient = async (req, res) => {
 export let deleteClientDocument = async (req, res) => {
   try {
     const { id, filename } = req.query;
-    const _id = getId(id);
 
-    const documents = await Files.findOne({ userId: _id });
+    const documents = await Info.findOne({ _id: id });
 
     if (!documents) {
       return res
@@ -193,11 +192,8 @@ export let deleteClientDocument = async (req, res) => {
 // Update one or more client document
 export let updateClientDocument = async (req, res) => {
   try {
-    const { id } = req.query;
-    const _id = getId(id);
-    const { filenames } = req.query;
-    const documents = await Files.findOne({ userId: _id });
-
+    const { id, filenames } = req.query;
+    const documents = await Info.findOne({ _id: id });
     if (!documents) {
       return res
         .status(404)
@@ -240,10 +236,17 @@ export let updateClientDocument = async (req, res) => {
         const documentType = req.body[documentTypeKey];
         const documentFile = req.files[documentFileKey][0];
 
+        const userDefinedName = req.body.filename || `file-${i}`;
+        const newFilename = `${userDefinedName}-${Date.now()}${path.extname(
+          documentFile.originalname
+        )}`;
+        const newPath = path.join("uploads", newFilename);
+        fs.renameSync(documentFile.path, newPath);
+
         const fileData = {
           documentType: documentType,
-          filename: documentFile.filename,
-          filePath: "uploads/" + documentFile.filename,
+          filename: newFilename,
+          filePath: newPath,
         };
         docs.push(fileData);
       }
@@ -252,6 +255,7 @@ export let updateClientDocument = async (req, res) => {
     documents.document.push(...docs);
 
     await documents.save();
+
     return res
       .status(200)
       .json({ message: "Documents updated successfully", documents });

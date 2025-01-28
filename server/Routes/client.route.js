@@ -99,4 +99,16 @@ clientRouter.get(
   authorize(["Admin", "Employee"]),
   getCombinedData
 );
+
+clientRouter.post(
+  "/editFile",
+  authorize(["Admin", "Employee"]),
+  uploadFields,
+  updateClientDocument
+);
+clientRouter.delete(
+  "/oneFileDelete",
+  authorize(["Admin", "Employee"]),
+  deleteClientDocument
+);
 export default clientRouter;

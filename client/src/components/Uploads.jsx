@@ -42,15 +42,29 @@ let Uploads = ({
       if (status === 200) {
         removeUploadedData(id);
         toast.success(data.message);
+        getUploadedDoc();
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Error deleting client.");
     }
   };
-
+  let oneFileDelete = async (id, filename) => {
+    try {
+      const { status, data } = await remove(
+        `/api/oneFileDelete?id=${id}&filename=${filename}`,
+        token
+      );
+      if (status === 200) {
+        removeUploadedData(id);
+        toast.success(data.message);
+        getUploadedDoc();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Error deleting file.");
+    }
+  };
   useEffect(() => {
     getUploadedDoc();
-    console.log(uploadedData);
   }, []);
 
   useEffect(() => {
@@ -120,7 +134,7 @@ let Uploads = ({
                       </td>
                       <td>
                         <Link
-                          to={`/editDoc?id=${data._id}`}
+                          to={`/editFile?id=${data._id}&type=${val.documentType}&filename=${val.filename}`}
                           className="block rounded-md text-green-500 hover:text-green-700"
                           title="Update File"
                         >
@@ -131,7 +145,7 @@ let Uploads = ({
                         <button
                           className="rounded-md text-red-500 hover:text-red-700"
                           title="Delete File"
-                          // onClick={() => deleteClient(data._id)}
+                          onClick={() => oneFileDelete(data._id, val.filename)}
                         >
                           <FontAwesomeIcon icon={faTrashCan} />
                         </button>
