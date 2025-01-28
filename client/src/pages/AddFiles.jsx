@@ -1,28 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 import { useActiveTab } from "../store/store";
 
-let EditFile = () => {
+let AddFiles = () => {
   const token = getToken();
   const location = useLocation();
   const navigate = useNavigate();
-  const { post } = useAxios();
+  const { post, get } = useAxios();
 
   const spread = decodeURIComponent(location.search);
   const id = spread.split("&")[0].split("=")[1];
-  const docType = spread.split("&")[1].split("=")[1];
-  const filename = spread.split("&")[2].split("=")[1];
-  const file = filename.split("-")[0];
 
   const setActiveTab = useActiveTab((state) => state.setActiveTab);
   const [documents, setDocuments] = useState([
     {
-      documentType: docType,
+      documentType: "",
       document: "",
       filename: "Select the file",
     },
@@ -30,8 +29,7 @@ let EditFile = () => {
 
   const formik = useFormik({
     initialValues: {
-      clientId: "",
-      filename: file,
+      filename: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -44,10 +42,9 @@ let EditFile = () => {
           formData.append(`document-${i}`, doc.document);
         });
 
-        formData.append(`clientId`, values.clientId);
         formData.append(`filename`, values.filename);
         const { data, status } = await post(
-          `/api/editFile?id=${id}&filenames=${filename}`,
+          `/api/addFiles?id=${id}`,
           formData,
           token
         );
@@ -92,11 +89,46 @@ let EditFile = () => {
     "Domicile Certificate",
     "Others",
   ];
+  let [remainingDocTypes, setRemainingDocTypes] = useState([]);
+  const addDocuments = () => {
+    setDocuments([
+      ...documents,
+      {
+        documentType: "",
+        document: "",
+        filename: "Select the file",
+      },
+    ]);
+  };
+  useEffect(() => {
+    let getDocuments = async () => {
+      try {
+        const { data, status } = await get(`/api/getFiles?id=${id}`, token);
+        if (status === 200) {
+          const usedFiles = data.res?.map((el) => el.documentType);
+
+          setRemainingDocTypes(
+            docTypes.filter((el) => !usedFiles.includes(el))
+          );
+        }
+      } catch (error) {
+        toast.error(error.response.data.error || "Failed to get files..!");
+      }
+    };
+    getDocuments();
+  }, [get, id, token]);
+
+  const getAvailableDocTypes = (currentIndex) => {
+    const selectedTypes = documents
+      .map((doc, i) => (i !== currentIndex ? doc.documentType : null))
+      .filter(Boolean);
+    return remainingDocTypes.filter((type) => !selectedTypes.includes(type));
+  };
 
   return (
     <div className="w-full h-full overflow-y-scroll flex justify-center bg-white">
       <form className="w-[700px]  p-5 mt-5" onSubmit={formik.handleSubmit}>
-        <h1 className="text-4xl font-bold text-center">Update Files</h1>
+        <h1 className="text-4xl font-bold text-center">Add Files</h1>
 
         {documents.map((doc, i) => (
           <div className="w-full flex gap-2" key={i}>
@@ -112,15 +144,11 @@ let EditFile = () => {
                 <option value="" disabled={true}>
                   Select document
                 </option>
-                {docTypes
-                  .filter((cur) => {
-                    return cur === docType;
-                  })
-                  .map((cur, index) => (
-                    <option key={index} value={cur}>
-                      {cur}
-                    </option>
-                  ))}
+                {getAvailableDocTypes(i).map((cur, index) => (
+                  <option key={index} value={cur}>
+                    {cur}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -154,7 +182,13 @@ let EditFile = () => {
             </div>
           </div>
         ))}
-
+        <button
+          type="button"
+          onClick={addDocuments}
+          className="text-xl text-blue-500"
+        >
+          Add More
+        </button>
         <button className={styles.button} type="submit">
           Upload
         </button>
@@ -162,4 +196,4 @@ let EditFile = () => {
     </div>
   );
 };
-export default EditFile;
+export default AddFiles;

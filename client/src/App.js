@@ -20,6 +20,7 @@ import ViewDocuments from "./components/ViewDocuments";
 import PreviewClient from "./pages/PreviewClient";
 import EditUploads from "./pages/EditUploads";
 import EditFile from "./pages/EditFile";
+import AddFiles from "./pages/AddFiles";
 
 const router = createBrowserRouter([
   {
@@ -132,6 +133,14 @@ const router = createBrowserRouter([
     element: (
       <AuthorizeUser>
         <EditFile />
+      </AuthorizeUser>
+    ),
+  },
+  {
+    path: "/addFile",
+    element: (
+      <AuthorizeUser>
+        <AddFiles />
       </AuthorizeUser>
     ),
   },

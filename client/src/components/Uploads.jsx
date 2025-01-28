@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
   faPenToSquare,
+  faPlus,
+  faPlusSquare,
   faPrint,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
@@ -154,6 +156,14 @@ let Uploads = ({
                   ))}
               </tbody>
             </table>
+            <hr className="my-1" />
+            <Link
+              to={`/addFile?id=${data._id}`}
+              className="text-blue-500 text-md"
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              <span className="ml-2">Add Files</span>
+            </Link>
           </div>
         </td>
         <td className="px-4 py-2 border text-center cursor-pointer ">

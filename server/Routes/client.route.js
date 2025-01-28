@@ -2,12 +2,14 @@ import { Router } from "express";
 import {
   addClient,
   addClientDocument,
+  addFiles,
   deleteClient,
   deleteClientDocument,
   getClientById,
   getClients,
   getClientsDocs,
   getCombinedData,
+  getFiles,
   getLastId,
   getUploads,
   getUploadsById,
@@ -110,5 +112,14 @@ clientRouter.delete(
   "/oneFileDelete",
   authorize(["Admin", "Employee"]),
   deleteClientDocument
+);
+
+clientRouter.get("/getFiles", authorize(["Admin", "Employee"]), getFiles);
+
+clientRouter.post(
+  "/addFiles",
+  authorize(["Admin", "Employee"]),
+  uploadFields,
+  addFiles
 );
 export default clientRouter;

@@ -227,7 +227,6 @@ export let updateClientDocument = async (req, res) => {
       );
     }
 
-    const docs = [];
     for (let i = 0; i <= 8; i++) {
       const documentTypeKey = `documentType-${i}`;
       const documentFileKey = `document-${i}`;
@@ -248,13 +247,14 @@ export let updateClientDocument = async (req, res) => {
           filename: newFilename,
           filePath: newPath,
         };
-        docs.push(fileData);
+        await Info.updateOne(
+          { _id: id },
+          {
+            $push: { document: fileData },
+          }
+        );
       }
     }
-
-    documents.document.push(...docs);
-
-    await documents.save();
 
     return res
       .status(200)
@@ -450,6 +450,60 @@ export let getCombinedData = async (req, res) => {
     ]);
 
     return res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server Error" });
+  }
+};
+
+export let getFiles = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const result = await Info.findOne({ _id: id });
+    return res.status(200).json({ res: result.document });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server Error" });
+  }
+};
+
+export let addFiles = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const documents = await Info.findOne({ _id: id });
+    const filename = documents.filename;
+
+    for (let i = 0; i <= 8; i++) {
+      const documentTypeKey = `documentType-${i}`;
+      const documentFileKey = `document-${i}`;
+
+      if (req.files[documentFileKey] && req.body[documentTypeKey]) {
+        const documentType = req.body[documentTypeKey];
+        const documentFile = req.files[documentFileKey][0];
+
+        const userDefinedName = filename || `file-${i}`;
+        const newFilename = `${userDefinedName}-${Date.now()}${path.extname(
+          documentFile.originalname
+        )}`;
+        const newPath = path.join("uploads", newFilename);
+        fs.renameSync(documentFile.path, newPath);
+
+        const fileData = {
+          documentType: documentType,
+          filename: newFilename,
+          filePath: newPath,
+        };
+        await Info.updateOne(
+          { _id: id },
+          {
+            $push: { document: fileData },
+          }
+        );
+      }
+    }
+
+    return res.status(200).json({ message: "Files Added Successfully..!" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server Error" });
