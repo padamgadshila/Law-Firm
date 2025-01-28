@@ -50,7 +50,7 @@ userRouter.get(
 userRouter.get("/profile", authorize(["Admin", "Employee"]), getProfile);
 
 // Update Profile
-userRouter.post(
+userRouter.put(
   "/updateProfile",
   authorize(["Admin", "Employee"]),
   updateProfile

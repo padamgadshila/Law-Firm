@@ -322,7 +322,7 @@ export let dashboardData = async (req, res) => {
 
     const _id = getId(id);
     const Employee = await User.find({ role: "employee" });
-    const Clients = await Client.find();
+    const Clients = await Info.find();
     const File = await Files.find();
     const events = await Event.find({ adminId: _id });
     let totalEmployee = Employee.length;

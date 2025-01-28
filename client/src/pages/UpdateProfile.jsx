@@ -11,6 +11,7 @@ let UpdateProfile = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const { get, put } = useAxios();
+  const token = getToken();
   const formik = useFormik({
     initialValues: {
       fname: "",
@@ -29,14 +30,15 @@ let UpdateProfile = () => {
         await formik.setFieldValue("profilePic", image || "");
         const { data, status } = await put(
           `/api/updateProfile?id=${values._id}`,
-          values
+          values,
+          token
         );
         if (status === 200) {
           toast.success(data.message);
           const role = localStorage.getItem("role");
-          if (role === "admin") {
+          if (role === "Admin") {
             navigate("/admin");
-          } else if (role === "employee") {
+          } else if (role === "Employee") {
             navigate("/employee");
           }
         }
@@ -66,7 +68,7 @@ let UpdateProfile = () => {
       const {
         data: { userData },
         status,
-      } = await get("/api/profile", { id: id, role: role }, { getToken });
+      } = await get(`/api/profile?id=${id}&role=${role}`, token);
       if (status === 200) {
         formik.setValues({
           fname: userData.fname || "",
