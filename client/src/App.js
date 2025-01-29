@@ -21,6 +21,7 @@ import PreviewClient from "./pages/PreviewClient";
 import EditUploads from "./pages/EditUploads";
 import EditFile from "./pages/EditFile";
 import AddFiles from "./pages/AddFiles";
+import Employees from "./pages/Employee";
 
 const router = createBrowserRouter([
   {
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
     path: "/employee",
     element: (
       <AuthorizeUser>
-        <Employee />
+        <Employees />
       </AuthorizeUser>
     ),
   },

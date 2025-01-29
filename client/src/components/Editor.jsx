@@ -106,7 +106,7 @@ let Editor = ({
                 Select Type
               </option>
               <option value="Notary">Notary</option>
-              <option value="Subreg">Subreg</option>
+              <option value="Sub-Registrar">Sub-Registrar</option>
               <option value="Only Type">Only Type</option>
             </select>
           </div>

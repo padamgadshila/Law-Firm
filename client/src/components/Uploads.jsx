@@ -104,6 +104,7 @@ let Uploads = ({
         </td>
         <td className="px-4 py-2 border">{data._id || "-"}</td>
         <td className="px-4 py-2 border">{data.documentNo || "-"}</td>
+        <td className="px-4 py-2 border">{data.docType || "-"}</td>
         <td className="px-4 py-2 border">{data.village || "-"}</td>
         <td className="px-4 py-2 border">{data.gatNo || "-"}</td>
         <td className="px-4 py-2 border">{data.year || "-"}</td>
@@ -219,10 +220,11 @@ let Uploads = ({
           "Select",
           "Client Id",
           "Document No",
+          "Document Type",
           "Village",
           "Gat No",
           "Year",
-          "Files",
+          "Filename",
         ].map((header, index) => (
           <th
             key={index}

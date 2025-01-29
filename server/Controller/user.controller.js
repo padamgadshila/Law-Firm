@@ -321,13 +321,20 @@ export let dashboardData = async (req, res) => {
     const { id } = req.query;
 
     const _id = getId(id);
-    const Employee = await User.find({ role: "employee" });
-    const Clients = await Info.find();
-    const File = await Files.find();
+    const Employee = await User.find({ role: "Employee" });
+    const Clients = await Client.aggregate([
+      {
+        $lookup: {
+          from: "infos",
+          localField: "clientId",
+          foreignField: "_id",
+          as: "infoRecords",
+        },
+      },
+    ]);
     const events = await Event.find({ adminId: _id });
     let totalEmployee = Employee.length;
     let TotalClients = Clients.length;
-    let totalFiles = File.length;
 
     let activeClients = Clients.filter(
       (data) => data.status === "Active"
@@ -335,12 +342,15 @@ export let dashboardData = async (req, res) => {
     let completedClients = Clients.filter(
       (data) => data.status === "Completed"
     ).length;
+    let pendingClients = Clients.filter(
+      (data) => data.status === "Pending"
+    ).length;
     return res.status(200).json({
       totalEmployee,
       TotalClients,
       activeClients,
       completedClients,
-      totalFiles,
+      pendingClients,
       events,
     });
   } catch (error) {
@@ -500,7 +510,7 @@ export let bulkEdit = async (req, res) => {
     if (Object.keys(updateFields).length === 0) {
       return res.status(400).json({ error: "No valid fields to update." });
     }
-    const result = await Client.updateMany(
+    const result = await Info.updateMany(
       { _id: { $in: id } },
       {
         $set: updateFields,

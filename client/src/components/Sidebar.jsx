@@ -22,36 +22,53 @@ let Sidebar = ({
   clientData,
   setClientData,
 }) => {
+  const role = localStorage.getItem("role");
+  let [filteredTabs, setFilteredTabs] = useState([]);
   let tabs = [
-    { name: "Dashboard", icon: faTachometerAlt, option: [] },
+    {
+      name: "Dashboard",
+      icon: faTachometerAlt,
+      option: [],
+      roles: ["Admin"],
+    },
     {
       name: "Upload",
       icon: faUpload,
       option: [],
+      roles: ["Admin", "Employee"],
     },
     {
       name: "Documents",
       icon: faFile,
       option: [],
+      roles: ["Admin", "Employee"],
     },
     {
       name: "Client Info",
       icon: faUser,
       option: [{ name: "Add Client Info", link: "/addClient" }],
+      roles: ["Admin", "Employee"],
     },
     {
       name: "Add Event",
       icon: faCalendarDays,
       option: [],
+      roles: ["Admin"],
     },
-    { name: "Statistics", icon: faChartLine, option: [] },
-    { name: "Others", icon: faGears, option: [] },
+    { name: "Statistics", icon: faChartLine, option: [], roles: ["Admin"] },
+    { name: "Others", icon: faGears, option: ["Admin"] },
     {
       name: "Settings",
       icon: faGear,
       option: [{ name: "Add employee", link: "/addEmployee" }],
+      roles: ["Admin"],
     },
   ];
+  useEffect(() => {
+    setFilteredTabs(tabs.filter((tab) => tab.roles?.includes(role)));
+  }, []);
+  console.log(filteredTabs);
+
   const [activeDropdown, setActiveDropdown] = useState(null);
   const handleDropdownToggle = (index) => {
     setActiveDropdown(activeDropdown === index ? null : index);
@@ -138,7 +155,7 @@ let Sidebar = ({
         </ul>
       </div>
       <ul className="text-white">
-        {tabs.map((tab, i) => (
+        {filteredTabs.map((tab, i) => (
           <React.Fragment key={i}>
             <li
               key={i}

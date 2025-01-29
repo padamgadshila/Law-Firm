@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
 import { Toaster, toast } from "react-hot-toast";
@@ -7,8 +7,9 @@ import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let AddClient = () => {
   const token = getToken();
-  const { post } = useAxios();
+  const { post, get } = useAxios();
   const navigate = useNavigate();
+  let [id, setId] = useState(0);
   const formik = useFormik({
     initialValues: {
       clientId: "",
@@ -42,7 +43,28 @@ let AddClient = () => {
       }
     },
   });
+  useEffect(() => {
+    const getLastId = async () => {
+      try {
+        const { data, status } = await get("/api/getId", token);
+        if (status === 200) {
+          setId(parseInt(data?.counter?.count) + 1);
+          console.log(data);
+        }
+      } catch (error) {
+        if (error.response.data.error) {
+          toast.error(error.response.data.error);
+        } else {
+          toast.error(error);
+        }
+      }
+    };
+    getLastId();
+  }, [get, token]);
 
+  useEffect(() => {
+    formik.setFieldValue("clientId", id);
+  }, [id]);
   return (
     <div className="w-full h-full flex justify-center">
       <Toaster />
@@ -57,6 +79,7 @@ let AddClient = () => {
             <input
               type="text"
               className={styles.input}
+              disabled={true}
               placeholder="Client Id"
               {...formik.getFieldProps("clientId")}
             />

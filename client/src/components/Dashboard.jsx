@@ -12,7 +12,7 @@ let Dashboard = ({ toast, setEvents, events }) => {
 
   let [totalEmp, setTotalEmp] = useState(0);
   let [totalCli, setTotalCli] = useState(0);
-  let [totalFiles, setTotalFiles] = useState(0);
+  let [totalPendingClients, setTotalPendingClients] = useState(0);
   let [activeClients, setActiveClients] = useState(0);
   let [completedClients, setCompletedClients] = useState(0);
 
@@ -24,7 +24,7 @@ let Dashboard = ({ toast, setEvents, events }) => {
       if (status === 200) {
         setTotalEmp(data?.totalEmployee);
         setTotalCli(data?.TotalClients);
-        setTotalFiles(data?.totalFiles);
+        setTotalPendingClients(data?.pendingClients);
         setActiveClients(data?.activeClients);
         setCompletedClients(data?.completedClients);
         setEvents(data?.events);
@@ -46,11 +46,18 @@ let Dashboard = ({ toast, setEvents, events }) => {
     setTotals([
       { name: "Total employees", total: totalEmp },
       { name: "Total clients", total: totalCli },
-      { name: "Active Clients", total: activeClients },
+      { name: "Active clients", total: activeClients },
+      { name: "Pending clients", total: totalPendingClients },
       { name: "Completed", total: completedClients },
-      { name: "Total documents", total: totalFiles },
     ]);
-  }, [totalEmp, totalCli, activeClients, completedClients, totalFiles, events]);
+  }, [
+    totalEmp,
+    totalCli,
+    activeClients,
+    completedClients,
+    events,
+    totalPendingClients,
+  ]);
   let Card = ({ title, count, index }) => {
     return (
       <div

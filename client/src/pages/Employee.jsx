@@ -12,27 +12,109 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import Client from "../components/Client";
-import { useClientStore } from "../store/store";
+import {
+  useActiveTab,
+  useAddDocument,
+  useClientStore,
+  useEditor,
+  useEvent,
+  useFilter,
+  useFilteredData,
+  useGlobal,
+  useGlobalFilter,
+  useInput,
+  useOperation,
+  useProfile,
+  useSelectRecords,
+  useShowProfile,
+  useShowSearchResults,
+  useSidebar,
+  useUploads,
+} from "../store/store";
 import Profile from "../components/Profile";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
-let Employee = () => {
+import Navigation from "../components/Navigation";
+import Sidebar from "../components/Sidebar";
+import Uploads from "../components/Uploads";
+import AddClientDocuments from "./AddClientDocuments";
+let Employees = () => {
   const token = getToken();
   const { get } = useAxios();
   const navigate = useNavigate();
-  let [activeTab, setActiveTab] = useState(() => {
-    return parseInt(localStorage.getItem("activeTabE")) || 0;
-  });
-  let tabs = [{ name: "Client", icon: faUser }];
-  let [showSidebar, setShowSidebar] = useState(false);
-  let [disableFilter, setDisableFilter] = useState(false);
-  let [showProfile, setShowProfile] = useState(false);
 
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setQuery((prev) => ({ ...prev, [name]: value }));
-  };
-  let [query, setQuery] = useState({ search: "", filter: "" });
+  const showProfile = useShowProfile((state) => state.showProfile);
+  const setShowProfile = useShowProfile((state) => state.setShowProfile);
+
+  const profile = useProfile((state) => state.profile);
+  const setProfile = useProfile((state) => state.setProfile);
+
+  const showSidebar = useSidebar((state) => state.showSidebar);
+  const inputSearch = useInput((state) => state.inputSearch);
+
+  const setInputSearch = useInput((state) => state.setInputSearch);
+  const setShowSidebar = useSidebar((state) => state.setShowSidebar);
+
+  const selectedFilter = useFilter((state) => state.selectedFilter);
+  const setSelectedFilter = useFilter((state) => state.setSelectedFilter);
+
+  const showAddDocument = useAddDocument((state) => state.showAddDocument);
+  const setShowAddDocument = useAddDocument(
+    (state) => state.setShowAddDocument
+  );
+
+  let clientData = useClientStore((state) => state.clientData);
+  let setClientData = useClientStore((state) => state.setClientData);
+  let removeClient = useClientStore((state) => state.removeClient);
+
+  let filteredData = useFilteredData((state) => state.filteredData);
+  let setFilteredData = useFilteredData((state) => state.setFilteredData);
+
+  let operation = useOperation((state) => state.operation);
+  let setOperation = useOperation((state) => state.setOperation);
+
+  let selectedRecords = useSelectRecords((state) => state.selectedRecords);
+  let setSelectedRecords = useSelectRecords(
+    (state) => state.setSelectedRecords
+  );
+  let removeSelectedRecords = useSelectRecords(
+    (state) => state.removeSelectedRecords
+  );
+
+  let showEditor = useEditor((state) => state.showEditor);
+  let setShowEditor = useEditor((state) => state.setShowEditor);
+
+  let uploadedData = useUploads((state) => state.uploadedData);
+  let setUploadedData = useUploads((state) => state.setUploadedData);
+  let removeUploadedData = useUploads((state) => state.removeUploadedData);
+
+  let showSearch = useShowSearchResults((state) => state.showSearch);
+  let setShowSearch = useShowSearchResults((state) => state.setShowSearch);
+
+  const globalData = useGlobal((state) => state.globalData);
+  const setGlobalData = useGlobal((state) => state.setGlobalData);
+
+  const globalFData = useGlobalFilter((state) => state.globalFData);
+  const setGlobalFData = useGlobalFilter((state) => state.setGlobalFData);
+
+  const activeTab = useActiveTab((state) => state.activeTab);
+  const setActiveTab = useActiveTab((state) => state.setActiveTab);
+
+  // TABS DATA
+  useEffect(() => {
+    localStorage.setItem("activeTabE", activeTab);
+  }, [activeTab]);
+  useEffect(() => {
+    const storedTab = localStorage.getItem("activeTabE");
+    const storedCid = localStorage.getItem("cid");
+    if (storedTab !== null) {
+      setActiveTab(Number(storedTab));
+    }
+    if (storedCid !== null) {
+      localStorage.removeItem("cid");
+    }
+  }, [setActiveTab]);
+
   let filters = [
     { name: "cid", value: "Client Id" },
     { name: "fname", value: "First name" },
@@ -52,45 +134,6 @@ let Employee = () => {
     localStorage.setItem("activeTabE", activeTab);
   }, [activeTab]);
 
-  let [originalClientData, setOriginalClientData] = useState([]);
-
-  let [isLoading, setLoading] = useState(false);
-  const setClientData = useClientStore((state) => state.setClientData);
-  const clientData = useClientStore((state) => state.clientData);
-  const removeClient = useClientStore((state) => state.removeClient);
-
-  let Refresh = async () => {
-    setLoading(true);
-    try {
-      const { data, status } = await get("/api/getClients", token);
-      if (status === 200) {
-        setClientData(data.clientData);
-      } else {
-        throw new Error("Failed to fetch clients");
-      }
-    } catch (error) {
-      if (error.response) {
-        const { data, status } = error.response;
-
-        if (status === 404) {
-          toast.error(data.error);
-        }
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    if (query.filter && query.search) {
-      const filtered = originalClientData.filter((item) =>
-        item[query.filter]?.toLowerCase().includes(query.search.toLowerCase())
-      );
-      setClientData(filtered);
-    } else {
-      setClientData(originalClientData);
-    }
-  }, [query]);
-
   useEffect(() => {
     const storedTab = localStorage.getItem("activeTabE");
     const storedCid = localStorage.getItem("cid");
@@ -101,7 +144,13 @@ let Employee = () => {
       localStorage.removeItem("cid");
     }
   }, []);
-  let [profile, setProfile] = useState({});
+
+  // function to show editor page
+  let handleShowEditor = () =>
+    showEditor ? setShowEditor(false) : setShowEditor(true);
+  // Function to show add document page
+  let handleAddDocumentDisplay = () =>
+    showAddDocument ? setShowAddDocument(false) : setShowAddDocument(true);
   return (
     <div className="w-full h-screen">
       <Toaster />
@@ -123,113 +172,81 @@ let Employee = () => {
         />
       </div>
 
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white shadow-lg flex items-center justify-between w-full mx-auto h-[70px]">
-        <div className="flex items-center">
-          <FontAwesomeIcon
-            icon={showSidebar ? faClose : faBars}
-            className="text-2xl ml-7 cursor-pointer"
-            onClick={() => {
-              showSidebar ? setShowSidebar(false) : setShowSidebar(true);
-            }}
-          />
-          <h1 className="ml-6 font-bold text-2xl">
-            {profile.username || "Admin"}
-          </h1>
-        </div>
-        {activeTab === 0 && (
-          <div className="flex items-center gap-1">
-            <input
-              type="text"
-              placeholder="Search"
-              value={query.search}
-              onChange={handleOnChange}
-              name="search"
-              className="bg-white text-black w-[250px] h-[50px] rounded-l-xl outline-none pl-3 text-xl"
-            />
-            <select
-              onClick={() => setDisableFilter(true)}
-              value={query.filter}
-              onChange={handleOnChange}
-              name="filter"
-              className="bg-white text-black cursor-pointer w-auto h-[50px] outline-none appearance-none px-2 text-[22px]  rounded-r-xl"
-            >
-              <option disabled={disableFilter}>Filter</option>
-              {filters.map((o, i) => (
-                <option value={o.name} key={i}>
-                  {o.value}
-                </option>
-              ))}
-            </select>
-            <FontAwesomeIcon
-              spin={isLoading}
-              icon={faSyncAlt}
-              className="ml-5 cursor-pointer text-2xl bg-[#fd25d6] p-2 rounded-full text-white"
-              title="Refresh"
-              onClick={Refresh}
-            />
-            <Link
-              to={"/addClient"}
-              className="bg-gradient-to-r from-indigo-400 to-purple-500 rounded-md px-5 py-2"
-            >
-              Add Client <FontAwesomeIcon icon={faUserPlus} />
-            </Link>
-          </div>
-        )}
-        <img
-          src={profile.profilePic || avatar}
-          alt="profile pic"
-          className="w-[50px] h-[50px] rounded-full mr-6 cursor-pointer"
-          onClick={() => {
-            showProfile ? setShowProfile(false) : setShowProfile(true);
-          }}
-        />
-      </div>
+      {/* Navigation bar */}
+      <Navigation
+        showSidebar={showSidebar}
+        setShowSidebar={setShowSidebar}
+        profile={profile}
+        activeTab={activeTab}
+        showProfile={showProfile}
+        setShowProfile={setShowProfile}
+        filters={filters}
+        inputSearch={inputSearch}
+        setInputSearch={setInputSearch}
+        setFilterClientDetails={setFilteredData}
+        operation={operation}
+        selectedRecords={selectedRecords}
+        removeSelectedRecords={removeSelectedRecords}
+        handleShowEditor={handleShowEditor}
+        selectedFilter={selectedFilter}
+        setSelectedFilter={setSelectedFilter}
+        clientData={clientData}
+        setClientData={setClientData}
+        setShowSearch={setShowSearch}
+        globalData={globalData}
+        setGlobalData={setGlobalData}
+        globalFData={globalFData}
+        setGlobalFData={setGlobalFData}
+      />
 
       {/* Main Page */}
       <div className="flex">
-        {/* Sidebar */}
-        <div
-          className={`bg-[#2d3748] z-10 w-[170px] h-[calc(100vh-70px)] fixed p-2 transform transition-all duration-300 ease-in-out  ${
-            showSidebar ? " translate-x-0" : "translate-x-[-100%]"
-          }`}
-        >
-          <ul className="text-white">
-            {tabs.map((tab, i) => (
-              <li
-                key={i}
-                className={`flex items-center my-2 px-3 py-1 rounded-md cursor-pointer " ${
-                  activeTab === i ? "bg-gray-700" : " "
-                }`}
-                onClick={() => setActiveTab(i)}
-              >
-                <FontAwesomeIcon
-                  icon={tab.icon}
-                  className="text-[22px] w-[20px] h-[20px]"
-                />
-                <span className="inline-block ml-2 text-[20px]">
-                  {tab.name}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Sidebar
+          showSidebar={showSidebar}
+          handleAddDocumentDisplay={handleAddDocumentDisplay}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          clientData={clientData}
+          setClientData={setClientData}
+        />
 
         {/* Content Area */}
-        <div className="relative overflow-y-scroll w-full h-[calc(100vh-70px)] ml-3 border-gray-300">
-          {activeTab === 0 && (
-            <div className="absolute w-full h-full px-2">
-              <Client
-                clientData={clientData}
-                setClientData={setClientData}
-                removeClient={removeClient}
-                toast={toast}
-                setOriginalClientData={setOriginalClientData}
-              />
-            </div>
+        <div
+          className={`relative overflow-y-scroll  h-[calc(100vh-70px)]  border-gray-300 transition-all duration-300 ease-in-out transform ${
+            showSidebar ? "w-[calc(100%-270px)] translate-x-[270px]" : "w-full"
+          }`}
+        >
+          {activeTab === 0 && <AddClientDocuments />}
+          {activeTab === 1 && (
+            <Uploads
+              uploadedData={uploadedData}
+              setUploadedData={setUploadedData}
+              removeUploadedData={removeUploadedData}
+              setSelectedRecords={setSelectedRecords}
+              selectedRecords={selectedRecords}
+              showSearch={showSearch}
+              setShowSearch={setShowSearch}
+              setOperation={setOperation}
+            />
+          )}
+          {activeTab === 2 && (
+            <Client
+              toast={toast}
+              clientData={clientData}
+              filteredData={filteredData}
+              setFilteredData={setFilteredData}
+              setOperation={setOperation}
+              selectedRecords={selectedRecords}
+              setSelectedRecords={setSelectedRecords}
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}
+              removeClient={removeClient}
+              setClientData={setClientData}
+            />
           )}
         </div>
       </div>
     </div>
   );
 };
-export default Employee;
+export default Employees;

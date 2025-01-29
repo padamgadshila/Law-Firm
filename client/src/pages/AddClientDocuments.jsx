@@ -14,7 +14,7 @@ let AddClientDocuments = () => {
   const navigate = useNavigate();
   const { post, get } = useAxios();
   const setActiveTab = useActiveTab((state) => state.setActiveTab);
-  let [id, setId] = useState(0);
+
   const [documents, setDocuments] = useState([
     {
       documentType: "",
@@ -60,12 +60,14 @@ let AddClientDocuments = () => {
         );
         if (status === 200) {
           toast.success(data.message);
-          setActiveTab(2);
+
           const role = localStorage.getItem("role");
           formik.resetForm();
           if (role === "Admin") {
+            setActiveTab(2);
             navigate("/admin");
           } else if (role === "Employee") {
+            setActiveTab(1);
             navigate("/employee");
           }
         }
@@ -75,28 +77,6 @@ let AddClientDocuments = () => {
     },
   });
 
-  useEffect(() => {
-    const getLastId = async () => {
-      try {
-        const { data, status } = await get("/api/getId", token);
-        if (status === 200) {
-          setId(parseInt(data?.counter?.count) + 1);
-          console.log(data);
-        }
-      } catch (error) {
-        if (error.response.data.error) {
-          toast.error(error.response.data.error);
-        } else {
-          toast.error(error);
-        }
-      }
-    };
-    getLastId();
-  }, [get, token]);
-
-  useEffect(() => {
-    formik.setFieldValue("clientId", id);
-  }, [id]);
   const currentYear = 2025;
   const startYear = 1940;
   const years = [];
@@ -156,7 +136,6 @@ let AddClientDocuments = () => {
             <label className="text-xl ml-1">Client Id</label>
             <input
               className={styles.input}
-              disabled={true}
               placeholder="Client Id"
               {...formik.getFieldProps("clientId")}
             />
@@ -167,14 +146,6 @@ let AddClientDocuments = () => {
               className={styles.input}
               placeholder="Filename"
               {...formik.getFieldProps("filename")}
-            />
-          </div>
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Village name</label>
-            <input
-              className={styles.input}
-              placeholder="Village name"
-              {...formik.getFieldProps("village")}
             />
           </div>
         </div>
