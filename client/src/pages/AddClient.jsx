@@ -130,6 +130,7 @@ let AddClient = () => {
               <label className="text-xl ml-1">Mobile</label>
               <input
                 type="text"
+                maxLength="10"
                 className={styles.input}
                 placeholder="Mobile No."
                 {...formik.getFieldProps("mobile")}
@@ -204,6 +205,7 @@ let AddClient = () => {
             <input
               type="text"
               className={styles.input}
+              maxLength="6"
               placeholder="Pincode"
               {...formik.getFieldProps("pincode")}
             />
