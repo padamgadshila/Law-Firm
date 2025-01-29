@@ -104,6 +104,7 @@ let Employees = () => {
   useEffect(() => {
     localStorage.setItem("activeTabE", activeTab);
   }, [activeTab]);
+
   useEffect(() => {
     const storedTab = localStorage.getItem("activeTabE");
     const storedCid = localStorage.getItem("cid");

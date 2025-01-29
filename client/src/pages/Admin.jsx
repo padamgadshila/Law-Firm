@@ -139,8 +139,42 @@ let Admin = () => {
   let handleShowEditor = () =>
     showEditor ? setShowEditor(false) : setShowEditor(true);
 
+  // Handle right-click
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+
+    setMenuPosition({ x: e.pageX, y: e.pageY });
+    setMenuVisible(true);
+  };
+
+  const handleClick = () => {
+    setMenuVisible(false);
+  };
   return (
-    <div className="w-full h-screen relative">
+    <div
+      className="w-full h-screen relative"
+      onContextMenu={handleContextMenu}
+      onClick={handleClick}
+    >
+      {menuVisible && (
+        <ul
+          className="absolute bg-white shadow-lg rounded-md w-40 py-2 border z-50"
+          style={{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }}
+        >
+          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+            Option 1
+          </li>
+          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+            Option 2
+          </li>
+          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+            Option 3
+          </li>
+        </ul>
+      )}
       <Toaster />
       {/* profile */}
 

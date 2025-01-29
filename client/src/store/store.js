@@ -72,9 +72,13 @@ export let useSelectRecords = create((set) => ({
     })),
 }));
 
+const role = localStorage.getItem("role");
 // states
 export let useActiveTab = create((set) => ({
-  activeTab: parseInt(localStorage.getItem("activeTab")) || 0,
+  activeTab:
+    role === "Admin"
+      ? parseInt(localStorage.getItem("activeTab")) || 0
+      : parseInt(localStorage.getItem("activeTabE")) || 0,
   setActiveTab: (data) => set({ activeTab: data }),
 }));
 
