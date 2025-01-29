@@ -23,7 +23,15 @@ export let addClient = async (req, res) => {
       village,
       pincode,
     } = req.body;
+    const check = await Client.find({
+      fname: fname,
+      mname: mname,
+      lname: lname,
+    });
 
+    if (check.length > 0) {
+      return res.status(409).json({ error: "Client already exists..!" });
+    }
     const client = await Client.create({
       fname,
       clientId,
