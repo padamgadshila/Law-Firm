@@ -18,7 +18,6 @@ let Client = ({
   selectedRecords,
   setSelectedRecords,
   selectedFilter,
-  setSelectedFilter,
   removeClient,
   setClientData,
   removeSelectedRecords,
@@ -360,10 +359,10 @@ let Client = ({
             className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
           >
             Delete
-          </li>{" "}
-          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-            Print All
           </li>
+          {/* <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+            Print All
+          </li> */}
         </ul>
       )}
 

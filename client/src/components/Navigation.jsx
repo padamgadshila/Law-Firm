@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faClose,
-  faEyeSlash,
-  faPenToSquare,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars, faClose } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import avatar from "../images/profile.png";
-import toast from "react-hot-toast";
-import { useClientStore, useUniversalSearch } from "../store/store";
+import { useUniversalSearch } from "../store/store";
 import { useAxios } from "../hook/fetch.hook";
-import { getToken } from "../helper/getCookie";
 import { Link } from "react-router-dom";
 let Navigation = ({
   showSidebar,
@@ -25,49 +17,21 @@ let Navigation = ({
   inputSearch,
   setInputSearch,
   setFilterClientDetails,
-  operation,
-  selectedRecords,
-  removeSelectedRecords,
-  handleShowEditor,
   selectedFilter,
   setSelectedFilter,
   clientData,
-  setClientData,
   setShowSearch,
   globalData,
-  globalFData,
   setGlobalFData,
 }) => {
   const { post, get } = useAxios();
-  const token = getToken();
-  const removeClient = useClientStore((state) => state.removeClient);
-  let deleteMany = async () => {
-    try {
-      const { data, status } = await post(
-        "/api/bulkDelete",
-        { ids: selectedRecords },
-        token
-      );
-      if (status === 200) {
-        toast.success(data.message);
-        selectedRecords.forEach((id) => {
-          removeClient(id);
-          removeSelectedRecords(id);
-        });
-      }
-    } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data.error);
-      }
-    }
-  };
 
   const handleOnChange = (e) => {
     const value = e.target.value;
     setInputSearch(value.toLowerCase());
     let filtered = clientData.filter((client) => {
       return (
-        (client._id?.toLowerCase() || "").includes(value) ||
+        (client.clientId?.toLowerCase() || "").includes(value) ||
         (client.docNo?.toLowerCase() || "").includes(value) ||
         (client.fname?.toLowerCase() || "").includes(value) ||
         (client.mname?.toLowerCase() || "").includes(value) ||
@@ -90,38 +54,6 @@ let Navigation = ({
     setSelectedFilter("All");
   };
 
-  // hide
-  let hideMany = async () => {
-    try {
-      const { data, status } = await post(
-        "/api/bulkHide",
-        { ids: selectedRecords },
-        token
-      );
-      if (status === 200) {
-        toast.success(data.message);
-        selectedRecords.forEach((id) => {
-          removeSelectedRecords(id);
-        });
-        await getClientData();
-      }
-    } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data.error);
-      }
-    }
-  };
-  const getClientData = async () => {
-    try {
-      const { data, status } = await get("/api/getClients", token);
-      if (status === 200) {
-        setClientData(data.clientData);
-        // setFilterClientDetails(data.clientData);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Error fetching data.");
-    }
-  };
   const handleFilter = (e) => {
     setSelectedFilter(e.target.value);
   };

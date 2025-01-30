@@ -133,7 +133,6 @@ let Admin = () => {
     { name: "Active", value: "Active" },
     { name: "Pending", value: "Pending" },
     { name: "Completed", value: "Completed" },
-    { name: "", value: "Clients Type" },
   ];
   useEffect(() => {
     setSelectedFilter("All");
