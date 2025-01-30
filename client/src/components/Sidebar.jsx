@@ -67,7 +67,6 @@ let Sidebar = ({
   useEffect(() => {
     setFilteredTabs(tabs.filter((tab) => tab.roles?.includes(role)));
   }, []);
-  console.log(filteredTabs);
 
   const [activeDropdown, setActiveDropdown] = useState(null);
   const handleDropdownToggle = (index) => {

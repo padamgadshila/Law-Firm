@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
@@ -21,22 +21,16 @@ let Client = ({
   setSelectedFilter,
   removeClient,
   setClientData,
+  removeSelectedRecords,
+  handleShowEditor,
 }) => {
   const token = getToken();
-  const { get, remove } = useAxios();
+  const { get, remove, post } = useAxios();
   const handleCheckboxChange = (id) => {
     if (selectedRecords.includes(id)) {
       setSelectedRecords(selectedRecords.filter((recordId) => recordId !== id));
     } else {
       setSelectedRecords([...selectedRecords, id]);
-    }
-  };
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedRecords(filteredData.map((data) => data.clientId));
-    } else {
-      setSelectedRecords([]);
     }
   };
 
@@ -233,19 +227,7 @@ let Client = ({
               index === 0 ? "rounded-tl-xl" : ""
             } ${index === 14 && !isAdmin ? "rounded-tr-xl" : ""}`}
           >
-            {index === 0 ? (
-              <input
-                type="checkbox"
-                className="w-5 h-5"
-                onChange={handleSelectAll}
-                checked={
-                  selectedRecords.length > 0 &&
-                  selectedRecords.length === filteredData.length
-                }
-              />
-            ) : (
-              header
-            )}
+            {header}
           </th>
         ))}
         {isAdmin && (
@@ -314,9 +296,77 @@ let Client = ({
     }
   };
 
+  let deleteMany = async () => {
+    try {
+      if (selectedRecords === 0) {
+        toast.error("No records selected..!");
+      } else {
+        const { data, status } = await post(
+          "/api/bulkDelete",
+          { ids: selectedRecords },
+          token
+        );
+        if (status === 200) {
+          toast.success(data.message);
+          selectedRecords.forEach((id) => {
+            getClientData();
+            removeSelectedRecords(id);
+          });
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.error || "Failed to delete..!");
+      }
+    }
+  };
+
   const role = localStorage.getItem("role");
+
+  // Handle right-click
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+
+    setMenuPosition({ x: e.pageX, y: e.pageY });
+    setMenuVisible(true);
+  };
+
+  const handleClick = () => {
+    setMenuVisible(false);
+  };
+
   return (
-    <div className="absolute w-full h-full px-2">
+    <div
+      className="absolute w-full h-full px-2"
+      onContextMenu={handleContextMenu}
+      onClick={handleClick}
+    >
+      {menuVisible && (
+        <ul
+          className="absolute bg-white shadow-lg rounded-md w-40 py-2 border z-50"
+          style={{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }}
+        >
+          <li
+            onClick={handleShowEditor}
+            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+          >
+            Update Status
+          </li>
+          <li
+            onClick={deleteMany}
+            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+          >
+            Delete
+          </li>{" "}
+          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+            Print All
+          </li>
+        </ul>
+      )}
+
       <table className="border-collapse w-full text-left table-auto">
         <TableHeader isAdmin={role === "Admin"} />
         <TableBody

@@ -22,7 +22,6 @@ import EditUploads from "./pages/EditUploads";
 import EditFile from "./pages/EditFile";
 import AddFiles from "./pages/AddFiles";
 import Employees from "./pages/Employee";
-import Right from "./pages/Right";
 
 const router = createBrowserRouter([
   {
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
-  },
-  {
-    path: "/right",
-    element: <Right />,
   },
   {
     path: "/login",

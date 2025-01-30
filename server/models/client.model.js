@@ -17,7 +17,7 @@ const clientSchema = new mongoose.Schema(
     },
     status: { type: String },
     fileUploaded: { type: String },
-    hide: { type: Boolean },
+    status: { type: String },
   },
   { timestamps: true }
 );

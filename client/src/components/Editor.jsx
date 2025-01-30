@@ -20,8 +20,6 @@ let Editor = ({
   const setClientData = useClientStore((state) => state.setClientData);
   const formik = useFormik({
     initialValues: {
-      caseType: "",
-      docType: "",
       status: "",
     },
     validateOnBlur: false,
@@ -29,16 +27,19 @@ let Editor = ({
     onSubmit: async (values) => {
       try {
         Object.assign(values, { id: selectedRecords });
-
-        const { data, status } = await post("/api/bulkEdit", values, token);
-        if (status === 200) {
-          toast.success(data.message);
-          formik.resetForm();
-          handleShowEditor(false);
-          selectedRecords.forEach((id) => {
-            removeSelectedRecords(id);
-          });
-          await getClientData();
+        if (selectedRecords.length === 0) {
+          toast.error("No records selected..!");
+        } else {
+          const { data, status } = await post("/api/bulkEdit", values, token);
+          if (status === 200) {
+            toast.success(data.message);
+            formik.resetForm();
+            handleShowEditor(false);
+            selectedRecords.forEach((id) => {
+              removeSelectedRecords(id);
+            });
+            await getClientData();
+          }
         }
       } catch (error) {
         if (error.response) {
@@ -53,7 +54,6 @@ let Editor = ({
       const { data, status } = await get("/api/getClients", token);
       if (status === 200) {
         setClientData(data.clientData);
-        // setFilterClientDetails(data.clientData);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Error fetching data.");
@@ -72,44 +72,12 @@ let Editor = ({
         onClick={handleShowEditor}
       />
       <form
-        className="border w-[650px] bg-white  p-5 rounded-md shadow-md mt-5"
+        className="border w-[450px] bg-white  p-5 rounded-md shadow-md mt-5"
         onSubmit={formik.handleSubmit}
       >
-        <h1 className="text-4xl font-bold text-center">Update Information</h1>
+        <h1 className="text-4xl font-bold text-center">Update Status</h1>
 
         <div className="w-full flex gap-2">
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Case Type</label>
-            <select
-              className={styles.input}
-              {...formik.getFieldProps("caseType")}
-            >
-              <option value="" disabled={true}>
-                Select Type
-              </option>
-              <option value="Criminal">Criminal</option>
-              <option value="Property">Property</option>
-              <option value="Divorce">Divorce</option>
-              <option value="Family">Family</option>
-              <option value="Civil">Civil</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Document Type</label>
-            <select
-              id="type"
-              {...formik.getFieldProps("docType")}
-              className={styles.input}
-            >
-              <option value="" disabled={true}>
-                Select Type
-              </option>
-              <option value="Notary">Notary</option>
-              <option value="Sub-Registrar">Sub-Registrar</option>
-              <option value="Only Type">Only Type</option>
-            </select>
-          </div>
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Status</label>
             <select

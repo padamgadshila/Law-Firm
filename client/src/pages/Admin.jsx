@@ -32,8 +32,14 @@ import AddEvent from "../components/AddEvent";
 import AddClientDocuments from "./AddClientDocuments";
 import Uploads from "../components/Uploads";
 import UniversalSearch from "../components/UniversalSearch";
+import { useAxios } from "../hook/fetch.hook";
+import { getToken } from "../helper/getCookie";
 
 let Admin = () => {
+  const { post } = useAxios();
+
+  const token = getToken();
+
   // import all the states
   const navigate = useNavigate();
   const activeTab = useActiveTab((state) => state.activeTab);
@@ -121,60 +127,24 @@ let Admin = () => {
     { name: "All", value: "All" },
     { name: "", value: "Document Type" },
     { name: "Notary", value: "Notary" },
-    { name: "Subreg", value: "Subreg" },
+    { name: "Sub-Registrar", value: "Sub-Registrar" },
     { name: "Only Type", value: "Only Type" },
     { name: "", value: "Select Status" },
     { name: "Active", value: "Active" },
     { name: "Pending", value: "Pending" },
     { name: "Completed", value: "Completed" },
     { name: "", value: "Clients Type" },
-    { name: "Hidden Clients", value: "Hidden Clients" },
-    { name: "Visible Clients", value: "Visible Clients" },
   ];
   useEffect(() => {
-    setSelectedFilter("Visible Clients");
+    setSelectedFilter("All");
   }, [clientData, setSelectedFilter]);
 
   // function to show editor page
   let handleShowEditor = () =>
     showEditor ? setShowEditor(false) : setShowEditor(true);
 
-  // Handle right-click
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  const handleContextMenu = (e) => {
-    e.preventDefault();
-
-    setMenuPosition({ x: e.pageX, y: e.pageY });
-    setMenuVisible(true);
-  };
-
-  const handleClick = () => {
-    setMenuVisible(false);
-  };
   return (
-    <div
-      className="w-full h-screen relative"
-      onContextMenu={handleContextMenu}
-      onClick={handleClick}
-    >
-      {menuVisible && (
-        <ul
-          className="absolute bg-white shadow-lg rounded-md w-40 py-2 border z-50"
-          style={{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }}
-        >
-          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-            Option 1
-          </li>
-          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-            Option 2
-          </li>
-          <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-            Option 3
-          </li>
-        </ul>
-      )}
+    <div className="w-full h-screen relative">
       <Toaster />
       {/* profile */}
 
@@ -266,6 +236,8 @@ let Admin = () => {
               setSelectedFilter={setSelectedFilter}
               removeClient={removeClient}
               setClientData={setClientData}
+              removeSelectedRecords={removeSelectedRecords}
+              handleShowEditor={handleShowEditor}
             />
           )}
           {/* Add Event */}

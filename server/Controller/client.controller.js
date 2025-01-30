@@ -42,7 +42,7 @@ export let addClient = async (req, res) => {
       caseType,
       dob,
       address: { state, city, village, pincode },
-      hide: false,
+      status: "Active",
     });
 
     return res
@@ -104,6 +104,7 @@ export let addClientDocument = async (req, res) => {
       }
     }
     const data = await Info.create({
+      _id: clientId,
       documentNo: documentNo,
       village: village,
       gatNo: gatNo,

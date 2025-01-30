@@ -501,19 +501,12 @@ export let bulkHide = async (req, res) => {
 // Bulk Edit
 export let bulkEdit = async (req, res) => {
   try {
-    const { id, caseType, docType, status } = req.body;
-    const updateFields = {};
-    if (caseType) updateFields.caseType = caseType;
-    if (docType) updateFields.docType = docType;
-    if (status) updateFields.status = status;
+    const { id, status } = req.body;
 
-    if (Object.keys(updateFields).length === 0) {
-      return res.status(400).json({ error: "No valid fields to update." });
-    }
-    const result = await Info.updateMany(
-      { _id: { $in: id } },
+    const result = await Client.updateMany(
+      { clientId: { $in: id } },
       {
-        $set: updateFields,
+        $set: { status: status },
       }
     );
     if (result.modifiedCount > 0) {

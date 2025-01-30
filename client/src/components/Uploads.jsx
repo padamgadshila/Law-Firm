@@ -298,14 +298,35 @@ let Uploads = ({
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOC${e.documentNo}</title>
     <style>
-      body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f9f9f9;}.container {
-        width: 8in;margin: 20px auto;padding: 20px;border: 1px solid #ccc;background-color: #fff;position:relative;}
-        .heading{margin-top: 20px;font-weight: bold;font-size:24px;text-align:center;color: #000;}
-        .subheading {font-size: 18px;font-weight: bold;margin: 20px 0 10px;}.info-row {display: 
-        flex;align-items: center;}.info-item {display:block;padding: 10px;      
-        border: 1px solid #ccc;width:100%;}.documents-section {margin-top: 20px;}
-        .document-item {display: block;margin-bottom: 5px;}.doc1{display:block;position:absolute;
-        top:10px;left:10px;} ul{list-style:none;}    
+            body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+      }
+      .container {
+        width: 8in;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        position: relative;
+      }
+      .heading {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 24px;
+        text-align: center;
+        color: #000;
+      }
+      .cont {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 20px;
+      }
+      .cont img {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -313,30 +334,24 @@ let Uploads = ({
 
       <h1 class="heading">Client Information</h1>
       <br />
-  <ul>
+ <div class="cont">
     ${
       e?.document.length > 0
         ? e?.document
             .map(
               (doc, i) => `
-            <li class="di" key="${i}">
             ${
               isImage(doc.filename)
                 ? `
-              <h3>${doc.documentType}</h3>
-                <img src="http://localhost:3500/${doc.filename}" style="width:50%" alt="${doc.documentType}" />
+                <img key="${i}" src="http://localhost:3500/${doc.filename}" alt="${doc.documentType}" />
               `
                 : ""
             }
-            </li>
           `
             )
             .join("")
-        : `<li>No files available</li>`
+        : `<span>No files available</span>`
     }
-  </ul>
-  
-      </div>
     </div>
   </body>
   </html>

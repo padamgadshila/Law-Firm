@@ -169,32 +169,6 @@ let Navigation = ({
 
   return (
     <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white shadow-lg flex items-center justify-between w-full mx-auto h-[70px]">
-      <div
-        className={`w-full h-[70px] bg-[rgba(0,0,0,.3)] backdrop-blur-sm absolute top-0 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center ${
-          operation ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      >
-        <div className="bg-white shadow-md rounded-md flex items-center justify-evenly w-[500px] h-[60px]">
-          <FontAwesomeIcon
-            icon={faTrashAlt}
-            className="text-red-500 text-3xl cursor-pointer"
-            title="Delete"
-            onClick={deleteMany}
-          />
-          <FontAwesomeIcon
-            icon={faEyeSlash}
-            className="text-blue-500 text-3xl cursor-pointer"
-            title="Hide"
-            onClick={hideMany}
-          />
-          <FontAwesomeIcon
-            icon={faPenToSquare}
-            className="text-green-500 text-3xl cursor-pointer"
-            title="Hide"
-            onClick={handleShowEditor}
-          />
-        </div>
-      </div>
       <div className="flex items-center">
         <FontAwesomeIcon
           icon={showSidebar ? faClose : faBars}
