@@ -127,7 +127,7 @@ let Sidebar = ({
       <div className="w-full px-2">
         <input
           type="text"
-          placeholder="Client Id, Name"
+          placeholder="Client Name"
           value={searchInput}
           onChange={handleSearch}
           className="w-full h-[50px] rounded-md outline-none px-5 text-xl shadow-md"

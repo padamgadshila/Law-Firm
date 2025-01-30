@@ -339,15 +339,12 @@ let Uploads = ({
       e?.document.length > 0
         ? e?.document
             .map(
-              (doc, i) => `
-            ${
-              isImage(doc.filename)
-                ? `
-                <img key="${i}" src="http://localhost:3500/${doc.filename}" alt="${doc.documentType}" />
-              `
-                : ""
-            }
-          `
+              (doc, i) =>
+                `${
+                  isImage(doc.filename)
+                    ? `<img key="${i}" src="http://localhost:3500/${doc.filename}" alt="${doc.documentType}" />`
+                    : ""
+                }`
             )
             .join("")
         : `<span>No files available</span>`
