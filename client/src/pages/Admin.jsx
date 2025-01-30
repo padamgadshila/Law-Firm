@@ -270,7 +270,7 @@ let Admin = () => {
 
       {/* universal search page */}
       <div
-        className={`w-full h-[calc(100%-80px)] border absolute top-[80px] left-0 bg-white ${
+        className={`w-full h-[calc(100%-70px)] border absolute top-[70px] left-0 bg-white z-50 ${
           showSearch ? "block" : "hidden"
         }`}
       >

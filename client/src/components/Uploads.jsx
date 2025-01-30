@@ -72,21 +72,7 @@ let Uploads = ({
   useEffect(() => {
     setOperation(selectedRecords.length > 0);
   }, [selectedRecords, setOperation]);
-  const handleCheckboxChange = (id) => {
-    if (selectedRecords.includes(id)) {
-      setSelectedRecords(selectedRecords.filter((recordId) => recordId !== id));
-    } else {
-      setSelectedRecords([...selectedRecords, id]);
-    }
-  };
 
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedRecords(filteredData.map((data) => data._id));
-    } else {
-      setSelectedRecords([]);
-    }
-  };
   const TableRows = ({ data, i }) => {
     const role = localStorage.getItem("role");
 
