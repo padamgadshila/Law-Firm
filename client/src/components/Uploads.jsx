@@ -92,16 +92,6 @@ let Uploads = ({
 
     return (
       <tr className="hover:bg-gray-100" key={i}>
-        <td className="px-4 py-2 border">
-          <input
-            type="checkbox"
-            className="w-5 h-5"
-            checked={selectedRecords.includes(data._id)}
-            onChange={() => {
-              handleCheckboxChange(data._id);
-            }}
-          />
-        </td>
         <td className="px-4 py-2 border">{data._id || "-"}</td>
         <td className="px-4 py-2 border">{data.documentNo || "-"}</td>
         <td className="px-4 py-2 border">{data.docType || "-"}</td>
@@ -217,7 +207,6 @@ let Uploads = ({
     <thead className="sticky top-0">
       <tr className="text-black">
         {[
-          "Select",
           "Client Id",
           "Document No",
           "Document Type",
@@ -232,19 +221,7 @@ let Uploads = ({
               index === 0 ? "rounded-tl-xl" : ""
             } ${index === 14 && !isAdmin ? "rounded-tr-xl" : ""}`}
           >
-            {index === 0 ? (
-              <input
-                type="checkbox"
-                className="w-5 h-5"
-                onChange={handleSelectAll}
-                checked={
-                  selectedRecords.length > 0 &&
-                  selectedRecords.length === filteredData.length
-                }
-              />
-            ) : (
-              header
-            )}
+            {header}
           </th>
         ))}
         {isAdmin && (
