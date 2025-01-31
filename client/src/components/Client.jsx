@@ -77,9 +77,6 @@ let Client = ({
   </head>
   <body>
     <div class="container">
-      <h1 class="heading">Client Information</h1>
-      <br />
-      <h2 class="subheading">Personal Information</h2>
       <div class="info-row">
         <span class="info-item">
           <b>Client ID: </b> ${e.clientId}

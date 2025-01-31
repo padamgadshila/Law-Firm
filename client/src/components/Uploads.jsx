@@ -291,9 +291,6 @@ let Uploads = ({
   </head>
   <body>
     <div class="container">
-
-      <h1 class="heading">Client Information</h1>
-      <br />
  <div class="cont">
     ${
       e?.document.length > 0
