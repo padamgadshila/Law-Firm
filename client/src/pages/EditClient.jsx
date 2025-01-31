@@ -23,8 +23,6 @@ let EditClient = () => {
       mobile: "",
       caseType: "",
       dob: "",
-      docType: "",
-      gender: "",
       state: "",
       city: "",
       village: "",
@@ -65,7 +63,6 @@ let EditClient = () => {
           email: clientData.email || "",
           mobile: clientData.mobile || "",
           caseType: clientData.caseType || "",
-          docType: clientData.docType || "",
           dob: clientData.dob || "",
           gender: clientData.gender || "",
           state: clientData.address?.state || "",
@@ -133,31 +130,18 @@ let EditClient = () => {
             />
           </div>
           <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Gender</label>
-            <select
-              className={styles.input}
-              {...formik.getFieldProps("gender")}
-            >
-              <option value="" disabled={true}>
-                Select Gender
-              </option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="w-full flex gap-2">
-          <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Mobile</label>
             <input
               type="text"
+              maxLength={10}
               className={styles.input}
               placeholder="Mobile No."
               {...formik.getFieldProps("mobile")}
             />
           </div>
+        </div>
+
+        <div className="w-full flex gap-2">
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Dob</label>
             <input
@@ -167,8 +151,6 @@ let EditClient = () => {
               {...formik.getFieldProps("dob")}
             />
           </div>
-        </div>
-        <div className="w-full flex gap-2">
           <div className="w-full flex flex-col my-2">
             <label className="text-xl ml-1">Case Type</label>
             <select
@@ -184,21 +166,6 @@ let EditClient = () => {
               <option value="Family">Family</option>
               <option value="Civil">Civil</option>
               <option value="Others">Others</option>
-            </select>
-          </div>
-          <div className="w-full flex flex-col my-2">
-            <label className="text-xl ml-1">Document Type</label>
-            <select
-              id="type"
-              {...formik.getFieldProps("docType")}
-              className={styles.input}
-            >
-              <option value="" disabled={true}>
-                Select Type
-              </option>
-              <option value="Notary">Notary</option>
-              <option value="Subreg">Subreg</option>
-              <option value="Only Type">Only Type</option>
             </select>
           </div>
         </div>

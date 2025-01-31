@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import { Mail } from "./mail.controller.js";
 import { getOtp } from "../helper/otpGenerator.js";
 import Info from "../models/info.model.js";
+import Counter from "../models/counter.model.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -482,21 +483,21 @@ export let bulkHide = async (req, res) => {
   }
 };
 
-// // Reset Document no counter
-// export const resetDocNoCounter = async (req, res) => {
-//   try {
-//     const result = await DocNoCounter.updateOne(
-//       {},
-//       { $set: { sequenceValue: 0 } },
-//       { upsert: true }
-//     );
-//     return res
-//       .status(200)
-//       .json({ message: "Counter reset successfully.", result });
-//   } catch (error) {
-//     return res.status(500).json({ error: "Server error" });
-//   }
-// };
+// Reset Document no counter
+export const resetDocNoCounter = async (req, res) => {
+  try {
+    const result = await Counter.findByIdAndUpdate(
+      { _id: "info" },
+      { $set: { count: 0 } },
+      { upsert: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "Counter reset successfully.", result });
+  } catch (error) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 
 // Bulk Edit
 export let bulkEdit = async (req, res) => {

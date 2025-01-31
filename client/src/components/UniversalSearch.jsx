@@ -4,9 +4,9 @@ import { useAxios } from "../hook/fetch.hook";
 import { toast } from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPrint } from "@fortawesome/free-solid-svg-icons";
-let UniversalSearch = ({ removeUploadedData, globalFData, setGlobalData }) => {
+let UniversalSearch = ({ globalFData, setGlobalData }) => {
   const token = getToken();
-  const { get, remove } = useAxios();
+  const { get } = useAxios();
   const role = localStorage.getItem("role");
 
   const getCombinedData = async () => {

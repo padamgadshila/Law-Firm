@@ -332,8 +332,6 @@ export let updateClient = async (req, res) => {
       mobile,
       caseType,
       dob,
-      docType,
-      gender,
       state,
       city,
       village,
@@ -348,8 +346,6 @@ export let updateClient = async (req, res) => {
       mobile,
       caseType,
       dob,
-      docType,
-      gender,
       address: {
         state,
         city,

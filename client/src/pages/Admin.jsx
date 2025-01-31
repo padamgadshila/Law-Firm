@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import {
@@ -32,14 +32,8 @@ import AddEvent from "../components/AddEvent";
 import AddClientDocuments from "./AddClientDocuments";
 import Uploads from "../components/Uploads";
 import UniversalSearch from "../components/UniversalSearch";
-import { useAxios } from "../hook/fetch.hook";
-import { getToken } from "../helper/getCookie";
 
 let Admin = () => {
-  const { post } = useAxios();
-
-  const token = getToken();
-
   // import all the states
   const navigate = useNavigate();
   const activeTab = useActiveTab((state) => state.activeTab);

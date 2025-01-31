@@ -11,9 +11,7 @@ let Editor = ({
   showEditor,
   handleShowEditor,
   selectedRecords,
-  setFilterClientDetails,
   removeSelectedRecords,
-  removeClient,
 }) => {
   const { get, post } = useAxios();
   const token = getToken();

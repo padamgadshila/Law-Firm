@@ -4,7 +4,6 @@ import { faBars, faClose } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import avatar from "../images/profile.png";
 import { useUniversalSearch } from "../store/store";
-import { useAxios } from "../hook/fetch.hook";
 import { Link } from "react-router-dom";
 let Navigation = ({
   showSidebar,
@@ -24,8 +23,6 @@ let Navigation = ({
   globalData,
   setGlobalFData,
 }) => {
-  const { post, get } = useAxios();
-
   const handleOnChange = (e) => {
     const value = e.target.value;
     setInputSearch(value.toLowerCase());

@@ -5,7 +5,7 @@ import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let Employee = ({ toast }) => {
   const token = getToken();
-  const { get, post, remove } = useAxios();
+  const { get, remove } = useAxios();
   const employeeData = useEmployeeStore((state) => state.employeeData);
   const setEmployeeData = useEmployeeStore((state) => state.setEmployeeData);
   const removeEmployee = useEmployeeStore((state) => state.removeEmployee);

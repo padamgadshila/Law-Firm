@@ -8,16 +8,13 @@ import {
   faEye,
   faPenToSquare,
   faPlus,
-  faPlusSquare,
   faPrint,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 let Uploads = ({
-  uploadedData,
   setUploadedData,
   removeUploadedData,
   selectedRecords,
-  setSelectedRecords,
   setOperation,
 }) => {
   const token = getToken();

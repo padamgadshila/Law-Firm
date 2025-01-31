@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "../css/style.module.css";
 import { useFormik } from "formik";
-import toast, { Toaster } from "react-hot-toast";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 import { useActiveTab } from "../store/store";
@@ -12,7 +10,7 @@ import { useActiveTab } from "../store/store";
 let AddClientDocuments = () => {
   const token = getToken();
   const navigate = useNavigate();
-  const { post, get } = useAxios();
+  const { post } = useAxios();
   const setActiveTab = useActiveTab((state) => state.setActiveTab);
 
   const [documents, setDocuments] = useState([

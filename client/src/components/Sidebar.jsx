@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTachometerAlt,
-  faUserTie,
   faUser,
   faCalendarDays,
   faGears,
@@ -16,7 +15,6 @@ import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let Sidebar = ({
   showSidebar,
-  handleAddDocumentDisplay,
   activeTab,
   setActiveTab,
   clientData,
