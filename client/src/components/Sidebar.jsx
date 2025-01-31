@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
+import Footer from "./Footer";
 let Sidebar = ({
   showSidebar,
   activeTab,
@@ -190,6 +191,7 @@ let Sidebar = ({
           </React.Fragment>
         ))}
       </ul>
+      <Footer />
     </div>
   );
 };

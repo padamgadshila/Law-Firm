@@ -22,6 +22,7 @@ import EditUploads from "./pages/EditUploads";
 import EditFile from "./pages/EditFile";
 import AddFiles from "./pages/AddFiles";
 import Employees from "./pages/Employee";
+import Copyright from "./pages/Copyright";
 
 const router = createBrowserRouter([
   {
@@ -144,6 +145,10 @@ const router = createBrowserRouter([
         <AddFiles />
       </AuthorizeUser>
     ),
+  },
+  {
+    path: "/copyright",
+    element: <Copyright />,
   },
 ]);
 function App() {
