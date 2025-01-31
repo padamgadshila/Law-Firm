@@ -13,6 +13,7 @@ import { Mail } from "./mail.controller.js";
 import { getOtp } from "../helper/otpGenerator.js";
 import Info from "../models/info.model.js";
 import Counter from "../models/counter.model.js";
+import { log } from "console";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -189,6 +190,7 @@ export let updateProfile = async (req, res) => {
   }
 };
 
+const otpStore = new Map();
 //Send otp
 export let verifyEmail = async (req, res) => {
   try {
@@ -219,6 +221,8 @@ export let verifyEmail = async (req, res) => {
       .status(200)
       .json({ message: "Email sent successfully!", emailData });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error: "Server Error..!" });
   }
 };
@@ -259,6 +263,8 @@ export let verifyOtp = async (req, res) => {
 
     return res.status(200).json({ message: "Okay" });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error: "Server error.!" });
   }
 };
@@ -297,6 +303,8 @@ export let resendOtp = async (req, res) => {
 
     await Mail({ body: emailData }, mockRes);
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error: "Server Error" });
   }
 };

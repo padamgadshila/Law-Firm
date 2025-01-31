@@ -16,6 +16,7 @@ import {
   getProfile,
   getProfilePic,
   login,
+  resendOtp,
   resetDocNoCounter,
   resetPassword,
   updateProfile,
@@ -70,7 +71,7 @@ userRouter.get("/getProfilePic", getProfilePic);
 userRouter.post("/verifyOtp", verifyOtp);
 
 // Resend Otp
-userRouter.post("/resendOtp");
+userRouter.post("/resendOtp", resendOtp);
 
 // Reset Password
 userRouter.put("/resetPassword", resetPassword);

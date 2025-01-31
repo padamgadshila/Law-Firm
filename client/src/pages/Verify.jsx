@@ -8,6 +8,7 @@ import { useAxios } from "../hook/fetch.hook";
 import { getToken } from "../helper/getCookie";
 let Verify = () => {
   const { post, get } = useAxios();
+  const token = getToken();
   let [image, setImage] = useState(null);
   const navigate = useNavigate();
   const formik = useFormik({
@@ -20,13 +21,13 @@ let Verify = () => {
       try {
         let email = localStorage.getItem("email");
         Object.assign(values, { email: email });
-        const { status } = await post("/api/verifyOtp", values);
+        const { status } = await post("/api/verifyOtp", values, token);
 
         if (status === 200) {
           navigate("/resetPassword", { replace: true });
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response.data.error || "Failed to sent otp");
       }
     },
   });
@@ -38,7 +39,7 @@ let Verify = () => {
         const { data, status } = await get(
           "/api/getProfilePic}",
           { email: email },
-          { getToken }
+          token
         );
         if (status === 200) {
           setImage(data.profilePic.profilePic);
@@ -54,7 +55,11 @@ let Verify = () => {
   let resendOtp = async () => {
     try {
       let email = localStorage.getItem("email");
-      const { data, status } = await post("/api/resendOtp", { email: email });
+      const { data, status } = await post(
+        "/api/resendOtp",
+        { email: email },
+        token
+      );
       if (status === 200) {
         toast.success(data.message);
       }

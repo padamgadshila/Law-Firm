@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useFormik } from "formik";
 import { passwordReset } from "../helper/validation";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAxios } from "../hook/fetch.hook";
 
 let ResetPassword = () => {
-  const { post } = useAxios();
+  const { put } = useAxios();
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -23,13 +23,13 @@ let ResetPassword = () => {
       try {
         const email = localStorage.getItem("email");
         Object.assign(values, { email: email });
-        const { status } = await post("/api/resetPassword", values);
+        const { status } = await put("/api/resetPassword", values);
         if (status === 200) {
           localStorage.removeItem("email");
           navigate("/");
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response.data.error || "Something went wrong..");
       }
     },
   });
