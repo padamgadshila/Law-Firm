@@ -9,7 +9,7 @@ const generateToken = (user) => {
       user,
     },
     key,
-    { expiresIn: "5h" }
+    { expiresIn: "7d" }
   );
   return token;
 };

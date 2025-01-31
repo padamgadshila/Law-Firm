@@ -64,7 +64,7 @@ let Verify = () => {
         toast.success(data.message);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.error || "Couldn't send otp..");
     }
   };
   return (

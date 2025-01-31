@@ -73,7 +73,6 @@ let EditUploads = () => {
             gatNo: data.result?.gatNo,
             docType: data.result?.docType,
           });
-          console.log(data);
         }
       } catch (error) {
         if (error.response.data.error) {

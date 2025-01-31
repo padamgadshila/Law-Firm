@@ -14,7 +14,6 @@ let UniversalSearch = ({ globalFData, setGlobalData }) => {
       const { data, status } = await get("/api/getCombinedData", token);
       if (status === 200) {
         setGlobalData(data.result);
-        console.log(data.result.infoRecords);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Error fetching data.");

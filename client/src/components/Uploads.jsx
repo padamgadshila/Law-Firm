@@ -28,7 +28,6 @@ let Uploads = ({
       if (status === 200) {
         setUploadedData(data.data);
         setFilteredData(data.data);
-        console.log(data);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Error fetching data.");

@@ -49,7 +49,6 @@ let AddClient = () => {
         const { data, status } = await get("/api/getId", token);
         if (status === 200) {
           setId(parseInt(data?.counter?.count) + 1);
-          console.log(data);
         }
       } catch (error) {
         if (error.response.data.error) {
