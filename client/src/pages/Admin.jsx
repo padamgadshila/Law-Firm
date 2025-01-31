@@ -244,8 +244,8 @@ let Admin = () => {
             <AddEvent toast={toast} events={events} setEvents={setEvents} />
           )}
           {activeTab === 5 && <div>Statics</div>}
-          {activeTab === 6 && <div>Others</div>}
-          {activeTab === 7 && <Employee toast={toast} />}
+          {activeTab === 6 && <Employee toast={toast} />}
+          {activeTab === 7 && <div>Others</div>}
         </div>
       </div>
 
