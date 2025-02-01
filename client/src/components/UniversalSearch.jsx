@@ -84,7 +84,7 @@ let UniversalSearch = ({ globalFData, setGlobalData }) => {
               (doc, i) =>
                 `${
                   isImage(doc.filename)
-                    ? `<img key="${i}" src="http://localhost:3500/${doc.filename}" alt="${doc.documentType}" />`
+                    ? `<img key="${i}" src="http://192.168.137.1:3500/${doc.filename}" alt="${doc.documentType}" />`
                     : ""
                 }`
             )

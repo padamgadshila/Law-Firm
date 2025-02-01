@@ -101,7 +101,7 @@ let Uploads = ({
                       <td>
                         <Link
                           className="text-blue-500"
-                          to={`http://localhost:3500/${val.filename}`}
+                          to={`http://192.168.137.1:3500/${val.filename}`}
                           target="_blank"
                         >
                           {val.filename}
