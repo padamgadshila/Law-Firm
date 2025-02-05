@@ -6,7 +6,7 @@ const connect = async () => {
   try {
     const db = process.env.DB;
     await mongoose
-      .connect("mongodb://192.168.137.1:27017/law", {
+      .connect("mongodb://192.168.0.230:27017/law", {
         maxPoolSize: 150, // Allow up to 50 connections in the pool
         minPoolSize: 10, // Maintain at least 10 connections
         serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds if no server found

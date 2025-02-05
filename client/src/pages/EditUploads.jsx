@@ -66,7 +66,7 @@ let EditUploads = () => {
         );
         if (status === 200) {
           formik.setValues({
-            clientId: data.result?._id,
+            clientId: data.result?.clientId,
             year: data.result?.year,
             documentNo: data.result?.documentNo,
             village: data.result?.village,

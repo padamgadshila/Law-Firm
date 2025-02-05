@@ -84,7 +84,7 @@ let UniversalSearch = ({ globalFData, setGlobalData }) => {
               (doc, i) =>
                 `${
                   isImage(doc.filename)
-                    ? `<img key="${i}" src="http://192.168.137.1:3500/${doc.filename}" alt="${doc.documentType}" />`
+                    ? `<img key="${i}" src="http://192.168.0.230:3500/${doc.filename}" alt="${doc.documentType}" />`
                     : ""
                 }`
             )
@@ -120,55 +120,49 @@ let UniversalSearch = ({ globalFData, setGlobalData }) => {
 
   const TableRows = ({ data, i }) => {
     return (
-      <tr className="hover:bg-gray-100" key={i}>
-        <td className="px-4 py-2 border">
-          {data.infoRecords?.[0]?._id || "-"}
-        </td>
-        <td className="px-4 py-2 border">
-          {data.fname || " "} {data.mname || " "} {data.lname || " "}{" "}
-        </td>
-        <td className="px-4 py-2 border">{data.email || "-"}</td>
-        <td className="px-4 py-2 border">{data.mobile || "-"}</td>
-        <td className="px-4 py-2 border">{data.caseType || "-"}</td>
-        <td className="px-4 py-2 border">
-          {data.infoRecords?.[0]?.documentNo || "-"}
-        </td>
-        <td className="px-4 py-2 border">
-          {data.infoRecords?.[0]?.gatNo || "-"}
-        </td>
-        <td className="px-4 py-2 border">
-          {data.infoRecords?.[0]?.year || "-"}
-        </td>
-        <td className="px-4 py-2 border">
-          {data.infoRecords?.[0]?.docType || "-"}
-        </td>
-        <td className="px-4 py-2 border">
-          {data.address.state || " "} {data.address.city || " "}{" "}
-          {data.address.village || " "} {data.address.pincode || " "}{" "}
-        </td>
-        <td className="px-4 py-2 border text-center cursor-pointer ">
-          <button
-            onClick={() => {
-              localStorage.setItem("print", "view");
-              printDocument(data.infoRecords?.[0]);
-            }}
-            className="px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </button>
-        </td>
-        <td className="px-4 py-2 border text-center cursor-pointer ">
-          <button
-            onClick={() => {
-              localStorage.setItem("print", "print");
-              printDocument(data.infoRecords?.[0]);
-            }}
-            className="px-4 py-2 rounded-md bg-yellow-500 text-white hover:bg-yellow-700"
-          >
-            <FontAwesomeIcon icon={faPrint} />
-          </button>
-        </td>
-      </tr>
+      <>
+        {data.infoRecords?.map((record, index) => (
+          <tr className="hover:bg-gray-100" key={`${i}-${index}`}>
+            <td className="px-4 py-2 border">{data?.clientId || "-"}</td>
+            <td className="px-4 py-2 border">
+              {data.fname || " "} {data.mname || " "} {data.lname || " "}{" "}
+            </td>
+            <td className="px-4 py-2 border">{data.email || "-"}</td>
+            <td className="px-4 py-2 border">{data.mobile || "-"}</td>
+            <td className="px-4 py-2 border">{data.caseType || "-"}</td>
+            <td className="px-4 py-2 border">{record.documentNo || "-"}</td>
+            <td className="px-4 py-2 border">{record.gatNo || "-"}</td>
+            <td className="px-4 py-2 border">{record.year || "-"}</td>
+            <td className="px-4 py-2 border">{record.docType || "-"}</td>
+            <td className="px-4 py-2 border">
+              {data.address.state || " "} {data.address.city || " "}{" "}
+              {data.address.village || " "} {data.address.pincode || " "}{" "}
+            </td>
+            <td className="px-4 py-2 border text-center cursor-pointer ">
+              <button
+                onClick={() => {
+                  localStorage.setItem("print", "view");
+                  printDocument(record);
+                }}
+                className="px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-700"
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </button>
+            </td>
+            <td className="px-4 py-2 border text-center cursor-pointer ">
+              <button
+                onClick={() => {
+                  localStorage.setItem("print", "print");
+                  printDocument(record);
+                }}
+                className="px-4 py-2 rounded-md bg-yellow-500 text-white hover:bg-yellow-700"
+              >
+                <FontAwesomeIcon icon={faPrint} />
+              </button>
+            </td>
+          </tr>
+        ))}
+      </>
     );
   };
   const TableHeader = ({ isAdmin }) => (

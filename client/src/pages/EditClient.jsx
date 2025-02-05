@@ -218,13 +218,6 @@ let EditClient = () => {
         <button className={styles.button} type="submit">
           Update
         </button>
-        <Link
-          to={localStorage.getItem("role") === "admin" ? "/admin" : "/employee"}
-          className="mt-4 text-[20px] font-bold text-blue-500 "
-        >
-          <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
-          Back to Home
-        </Link>
       </form>
     </div>
   );

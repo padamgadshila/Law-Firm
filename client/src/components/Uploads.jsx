@@ -8,6 +8,7 @@ import {
   faEye,
   faPenToSquare,
   faPlus,
+  faPlusCircle,
   faPrint,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +17,7 @@ let Uploads = ({
   removeUploadedData,
   selectedRecords,
   setOperation,
+  setActiveTab,
 }) => {
   const token = getToken();
   const { get, remove } = useAxios();
@@ -74,7 +76,7 @@ let Uploads = ({
 
     return (
       <tr className="hover:bg-gray-100" key={i}>
-        <td className="px-4 py-2 border">{data._id || "-"}</td>
+        <td className="px-4 py-2 border">{data.clientId || "-"}</td>
         <td className="px-4 py-2 border">{data.documentNo || "-"}</td>
         <td className="px-4 py-2 border">{data.docType || "-"}</td>
         <td className="px-4 py-2 border">{data.village || "-"}</td>
@@ -101,7 +103,7 @@ let Uploads = ({
                       <td>
                         <Link
                           className="text-blue-500"
-                          to={`http://192.168.137.1:3500/${val.filename}`}
+                          to={`http://192.168.0.230:3500/${val.filename}`}
                           target="_blank"
                         >
                           {val.filename}
@@ -182,6 +184,20 @@ let Uploads = ({
             </td>
           </>
         )}
+        <td className="px-4 py-2 border text-center cursor-pointer ">
+          <button
+            className="px-4 py-2 rounded-md bg-black text-white hover:bg-black"
+            onClick={() => {
+              if (localStorage.getItem("role") === "Admin") {
+                setActiveTab(1);
+              } else {
+                setActiveTab(0);
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faPlusCircle} />
+          </button>
+        </td>
       </tr>
     );
   };
@@ -208,7 +224,7 @@ let Uploads = ({
         ))}
         {isAdmin && (
           <th
-            colSpan={4}
+            colSpan={5}
             className="bg-gray-300 px-4 py-2 text-center rounded-tr-xl"
           >
             Action
@@ -216,7 +232,7 @@ let Uploads = ({
         )}
         {!isAdmin && (
           <th
-            colSpan={3}
+            colSpan={4}
             className="bg-gray-300 px-4 py-2 text-center rounded-tr-xl"
           >
             Action
@@ -298,7 +314,7 @@ let Uploads = ({
               (doc, i) =>
                 `${
                   isImage(doc.filename)
-                    ? `<img key="${i}" src="http://localhost:3500/${doc.filename}" alt="${doc.documentType}" />`
+                    ? `<img key="${i}" src="http://192.168.0.230:3500/${doc.filename}" alt="${doc.documentType}" />`
                     : ""
                 }`
             )

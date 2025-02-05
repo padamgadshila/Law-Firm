@@ -119,10 +119,7 @@ let Admin = () => {
   let filters = [
     { name: "", value: "Select Filter" },
     { name: "All", value: "All" },
-    { name: "", value: "Document Type" },
-    { name: "Notary", value: "Notary" },
-    { name: "Sub-Registrar", value: "Sub-Registrar" },
-    { name: "Only Type", value: "Only Type" },
+
     { name: "", value: "Select Status" },
     { name: "Active", value: "Active" },
     { name: "Pending", value: "Pending" },
@@ -214,6 +211,7 @@ let Admin = () => {
               showSearch={showSearch}
               setShowSearch={setShowSearch}
               setOperation={setOperation}
+              setActiveTab={setActiveTab}
             />
           )}
           {activeTab === 3 && (

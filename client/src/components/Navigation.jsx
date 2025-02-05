@@ -117,7 +117,7 @@ let Navigation = ({
         </Link>
       </div>
       {/* universal search */}
-      {activeTab === 0 && (
+      {activeTab === 0 && localStorage.getItem("role") === "Admin" && (
         <div className="flex items-center gap-1">
           <input
             type="text"
@@ -130,34 +130,35 @@ let Navigation = ({
         </div>
       )}
 
-      {activeTab === 3 && (
-        <div className="flex items-center gap-1">
-          <input
-            type="text"
-            placeholder="Search"
-            value={inputSearch}
-            onChange={handleOnChange}
-            name="search"
-            className="bg-white text-black w-[250px] h-[50px] rounded-l-xl outline-none pl-3 text-xl"
-          />
-          <select
-            value={selectedFilter}
-            onChange={handleFilter}
-            name="filter"
-            className="bg-white font-bold text-black cursor-pointer w-[200px] h-[50px] outline-none appearance-none px-2 text-[22px] rounded-r-xl text-center"
-          >
-            {filters.map((o, i) => (
-              <option
-                value={o.name}
-                disabled={o.name === "" ? true : false}
-                key={i}
-              >
-                {o.value}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      {activeTab === 3 ||
+        (activeTab === 2 && localStorage.getItem("role") === "Employee" && (
+          <div className="flex items-center gap-1">
+            <input
+              type="text"
+              placeholder="Search"
+              value={inputSearch}
+              onChange={handleOnChange}
+              name="search"
+              className="bg-white text-black w-[250px] h-[50px] rounded-l-xl outline-none pl-3 text-xl"
+            />
+            <select
+              value={selectedFilter}
+              onChange={handleFilter}
+              name="filter"
+              className="bg-white font-bold text-black cursor-pointer w-[200px] h-[50px] outline-none appearance-none px-2 text-[22px] rounded-r-xl text-center"
+            >
+              {filters.map((o, i) => (
+                <option
+                  value={o.name}
+                  disabled={o.name === "" ? true : false}
+                  key={i}
+                >
+                  {o.value}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
       <img
         src={profile.profilePic || avatar}
         alt="profile pic"

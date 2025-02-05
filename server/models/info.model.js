@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const infoSchema = new mongoose.Schema(
   {
-    _id: { type: String }, // Custom auto-incrementing ID
+    clientId: { type: String },
     documentNo: { type: String },
     village: { type: String },
     gatNo: { type: String },

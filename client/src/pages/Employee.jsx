@@ -117,19 +117,17 @@ let Employees = () => {
   }, [setActiveTab]);
 
   let filters = [
-    { name: "cid", value: "Client Id" },
-    { name: "fname", value: "First name" },
-    { name: "mname", value: "Middle name" },
-    { name: "lname", value: "Last name" },
-    { name: "email", value: "Email" },
-    { name: "mobile", value: "Mobile No." },
-    { name: "caseType", value: "Case type" },
-    { name: "state", value: "State" },
-    { name: "city", value: "City" },
-    { name: "village", value: "Village" },
-    { name: "pincode", value: "Pincode" },
-  ];
+    { name: "", value: "Select Filter" },
+    { name: "All", value: "All" },
 
+    { name: "", value: "Select Status" },
+    { name: "Active", value: "Active" },
+    { name: "Pending", value: "Pending" },
+    { name: "Completed", value: "Completed" },
+  ];
+  useEffect(() => {
+    setSelectedFilter("All");
+  }, [clientData, setSelectedFilter]);
   // Local
   useEffect(() => {
     localStorage.setItem("activeTabE", activeTab);
@@ -228,6 +226,7 @@ let Employees = () => {
               showSearch={showSearch}
               setShowSearch={setShowSearch}
               setOperation={setOperation}
+              setActiveTab={setActiveTab}
             />
           )}
           {activeTab === 2 && (
@@ -243,6 +242,8 @@ let Employees = () => {
               setSelectedFilter={setSelectedFilter}
               removeClient={removeClient}
               setClientData={setClientData}
+              removeSelectedRecords={removeSelectedRecords}
+              handleShowEditor={handleShowEditor}
             />
           )}
         </div>

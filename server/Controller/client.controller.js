@@ -67,18 +67,12 @@ export let addClientDocument = async (req, res) => {
       filename,
     } = req.body;
 
-    console.log(req.body);
-
     // const id = getId(clientId);
 
     // const update = await Client.findOneAndUpdate(
     //   { _id: id },
     //   { fileUploaded: "Yes" }
     // );
-    const check = await Info.findOne({ _id: clientId });
-    if (check) {
-      return res.status(409).json({ error: "Documents already uploaded..!" });
-    }
     const docs = [];
     for (let i = 0; i <= 8; i++) {
       const documentTypeKey = `documentType-${i}`;
@@ -104,7 +98,7 @@ export let addClientDocument = async (req, res) => {
       }
     }
     const data = await Info.create({
-      _id: clientId,
+      clientId: clientId,
       documentNo: documentNo,
       village: village,
       gatNo: gatNo,
@@ -235,7 +229,7 @@ export let updateClientDocument = async (req, res) => {
         (doc) => doc.filename !== filenames
       );
     }
-
+    await documents.save();
     for (let i = 0; i <= 8; i++) {
       const documentTypeKey = `documentType-${i}`;
       const documentFileKey = `document-${i}`;
@@ -264,7 +258,6 @@ export let updateClientDocument = async (req, res) => {
         );
       }
     }
-
     return res
       .status(200)
       .json({ message: "Documents updated successfully", documents });
@@ -363,7 +356,10 @@ export let updateClient = async (req, res) => {
 // get all uploaded data
 export let getUploads = async (req, res) => {
   try {
-    const data = await Info.find();
+    const unsortedData = await Info.find();
+    const data = unsortedData.sort((a, b) =>
+      a.clientId.localeCompare(b.clientId)
+    );
 
     return res.status(200).json({ data });
   } catch (error) {
@@ -379,7 +375,6 @@ export let getLastId = async (req, res) => {
       { $setOnInsert: { count: 0 } }, // Initialize only if not present
       { new: true, upsert: true } // Return the updated document or create it
     );
-    console.log(counter);
 
     return res.status(200).json({ counter });
   } catch (error) {
@@ -402,7 +397,6 @@ export let uploadUpdate = async (req, res) => {
   try {
     const { id } = req.query;
     const { documentNo, village, gatNo, extraInfo, year, docType } = req.body;
-    console.log(req.body);
 
     const result = await Info.findByIdAndUpdate(id, {
       documentNo,
@@ -448,7 +442,7 @@ export let getCombinedData = async (req, res) => {
         $lookup: {
           from: "infos",
           localField: "clientId",
-          foreignField: "_id",
+          foreignField: "clientId",
           as: "infoRecords",
         },
       },
