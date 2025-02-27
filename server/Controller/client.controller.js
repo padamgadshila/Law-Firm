@@ -125,8 +125,9 @@ export let deleteClient = async (req, res) => {
     const cid = req.query.id;
     const id = getId(cid);
     const clientId = await Client.findOne({ _id: id });
-    const clientDocs = await Info.find({ _id: clientId.clientId });
 
+    const clientDocs = await Info.find({ clientId: clientId.clientId });
+    
     if (clientDocs) {
       for (const doc of clientDocs) {
         for (const file of doc.document) {
@@ -134,7 +135,7 @@ export let deleteClient = async (req, res) => {
           fs.unlinkSync(fullPath);
         }
       }
-      const delDocuments = await Info.deleteMany({ _id: clientId.clientId });
+      const delDocuments = await Info.deleteMany({ clientId: clientId.clientId });
     }
 
     const delClient = await Client.deleteOne({ _id: id });
@@ -363,6 +364,8 @@ export let getUploads = async (req, res) => {
 
     return res.status(200).json({ data });
   } catch (error) {
+    console.log(error);
+    
     return res.status(500).json({ error: "Server Error" });
   }
 };
